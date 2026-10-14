@@ -1,0 +1,745 @@
+% !TEX program = xelatex
+% Standalone manuscript. Compile twice with XeLaTeX.
+\documentclass[UTF8,a4paper,11pt,fontset=none]{ctexart}
+\usepackage{fontspec}
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{Latin Modern Roman}}
+\IfFontExistsTF{Arial}{\setsansfont{Arial}}{\setsansfont{Latin Modern Sans}}
+\IfFontExistsTF{Consolas}{\setmonofont{Consolas}}{\setmonofont{Latin Modern Mono}}
+\IfFontExistsTF{SimSun}{
+  \setCJKmainfont[AutoFakeBold=1.5,ItalicFont=SimSun]{SimSun}
+  \setCJKsansfont{Microsoft YaHei}
+  \setCJKmonofont{SimSun}
+}{
+  \setCJKmainfont[BoldFont=FandolSong-Bold.otf,ItalicFont=FandolKai-Regular.otf]{FandolSong-Regular.otf}
+  \setCJKsansfont{FandolHei-Regular.otf}
+  \setCJKmonofont{FandolFang-Regular.otf}
+}
+\usepackage[left=25mm,right=25mm,top=23mm,bottom=23mm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array}
+\usepackage{xcolor,hyperref,fancyhdr}
+\definecolor{linkink}{HTML}{23445E}
+\hypersetup{colorlinks=true,linkcolor=linkink,citecolor=linkink,urlcolor=linkink,
+  pdftitle={二进制字符串局部模式计数的对数凹性},
+  pdfsubject={游程展开、系数平衡与 Cassini 差式}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small 二进制字符串局部模式计数的对数凹性}
+\fancyhead[R]{\small 论文稿}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.20em}
+\setlength{\emergencystretch}{2em}
+\linespread{1.10}
+\allowdisplaybreaks[2]
+\numberwithin{equation}{section}
+\renewcommand{\proofname}{证明}
+\newtheoremstyle{paperplain}{6pt}{6pt}{\normalfont}{}{\bfseries}{.}{0.5em}{}
+\theoremstyle{paperplain}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{proposition}[theorem]{命题}
+\newtheorem{corollary}[theorem]{推论}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{定义}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{注}
+\DeclareMathOperator{\occ}{occ}
+\DeclareMathOperator{\bdes}{bdes}
+\DeclareMathOperator{\Impart}{Im}
+\newcommand{\lcgap}{D_{n,k}}
+\newcommand{\supp}{\operatorname{supp}}
+\title{\textbf{二进制字符串局部模式计数的对数凹性}\\[0.3em]
+  \large 游程展开、系数平衡与 Cassini 差式}
+\author{}
+\date{2026年10月14日}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+考虑所有长度为 $n$ 且末位为 $1$ 的二进制字符串，并以连续模式 $10$ 与 $011$
+的出现次数之和作为统计量。本文证明，该统计量的计数序列对每个 $n\ge1$ 都对数凹，
+且在其正支集的内部严格对数凹。证明从游程分解导出一个非负二项式和，
+再用辅助变量记录游程数，将目标差式分成各个固定次数层。
+每个高次层的比较分为两步：利用非负线性形式乘积的系数提取证明尾词平衡，
+利用 Fibonacci 铺砖多项式的 Cassini 恒等式和单次变号公式证明中央集中。
+奇数指标下唯一可能为负的最低项，由紧邻系数的显式下界完全补偿。
+文中给出所用多项式事实的直接证明，因而全参数结论不依赖计数多项式本身实根、
+额外结构假设或有限计算。
+\end{abstract}
+\noindent\textbf{关键词：}二进制字符串；局部模式；对数凹；游程；实稳定多项式；Cassini 恒等式。
+
+\section{问题、背景与证明安排}\label{sec:intro}
+\subsection{统计量与主定理}
+记
+\[
+\mathcal W_n^{(1)}=\{w=w_1\cdots w_n\in\{0,1\}^n:w_n=1\}.
+\]
+对一个固定二进制模式 $u$，$\occ_u(w)$ 表示 $u$ 在 $w$ 中作为连续片段出现的次数。
+每个起始位置分别计数，允许不同出现彼此重叠。定义
+\begin{equation}\label{eq:stat}
+s(w)=\occ_{10}(w)+\occ_{011}(w),\qquad
+b_{n,k}=\#\{w\in\mathcal W_n^{(1)}:s(w)=k\}.
+\end{equation}
+约定 $b_{n,k}=0$ 当 $k<0$。例如，$w=1011$ 中两个模式各出现一次，所以 $s(w)=2$。
+本文证明以下结论。
+
+\begin{theorem}[主定理]\label{thm:main}
+对每个整数 $n\ge1$ 和每个整数 $k$，均有
+\begin{equation}\label{eq:main}
+b_{n,k}^{\,2}\ge b_{n,k-1}b_{n,k+1}.
+\end{equation}
+令 $d_n=\lfloor2(n-1)/3\rfloor$。计数序列的正支集恰为
+$0\le k\le d_n$，并且当 $1\le k<d_n$ 时，式 \eqref{eq:main} 为严格不等式。
+\end{theorem}
+
+\subsection{与模式避免排列的关系}
+Elizalde、Rivera 和 Zhuang 的论文 \cite{ERZ} 在 Conjecture 4.6 中提出三阶模式避免排列
+的大下降计数序列的对数凹猜想。其 Lemma 3.6、3.9 分别给出
+$\mathfrak S_n(123,132)$、$\mathfrak S_n(132,213)$ 到 $\mathcal W_n^{(1)}$ 的双射，
+并将大下降数转化为式 \eqref{eq:stat} 的统计量。
+因此，定理 \ref{thm:main} 证明了该猜想中这两个等价的分支。
+本文不将这一结论扩大为 Conjecture 4.6 的其他分支。
+
+原文已有计数生成函数与递推。本文的论证直接从字符串定义出发，
+生成函数只在附录中用于核对；证明的关键在于建立系数不等式，
+而不是重新得到已有的递推。
+
+\subsection{证明的组织}
+直接证明 $B_n(t)=\sum_kb_{n,k}t^k$ 实根并非本文所需的路线。
+我们先引入游程标记多项式 $F_{n,k}(z)$，使 $F_{n,k}(1)=b_{n,k}$，
+再研究
+\[
+D_{n,k}(z)=F_{n,k}(z)^2-F_{n,k-1}(z)F_{n,k+1}(z).
+\]
+辅助变量 $z$ 的次数记录两条字符串的零游程总数；
+它与 $B_n(t)$ 中记录统计量的变量 $t$ 不同。
+
+第 \ref{sec:runs} 节建立游程公式并确定正支集。
+第 \ref{sec:tools} 节证明两类需要的基本事实：铺砖多项式的实根与 Cassini 恒等式，
+以及非负线性形式乘积的系数提取。
+第 \ref{sec:reduction} 节把 $D_{n,k}$ 的固定次数系数写成加权差。
+第 \ref{sec:balance}、\ref{sec:concentration} 节分别完成尾词平衡与中央集中，
+从而处理所有次数 $R>k$。
+第 \ref{sec:exception} 节处理唯一可能出现的最低次负项，
+最后在第 \ref{sec:finish} 节合成主定理。
+
+\section{游程展开与支集}\label{sec:runs}
+全文对整数上、下标采用约定
+\begin{equation}\label{eq:binom-convention}
+\binom uv=0\quad\text{除非 }0\le v\le u.
+\end{equation}
+这也包括上标为负的情况。所有涉及二项式的求和因此都是有限的。
+
+\begin{proposition}[游程公式]\label{prop:runs}
+对 $n\ge1$、$k\ge0$，
+\begin{equation}\label{eq:runs}
+b_{n,k}=\sum_{r\ge0}
+\binom{r+1}{k+1-r}\binom{n-r-1}{k}.
+\end{equation}
+\end{proposition}
+\begin{proof}
+游程指极大的连续相同符号片段。先考虑首位为 $1$ 的字符串。
+若有 $r$ 个零游程，则有 $r+1$ 个一游程；每个零游程前恰有一个 $10$，
+所以 $\occ_{10}=r$。除最初的一游程外，设有 $q$ 个一游程的长度至少为二。
+它们各贡献一次 $011$，故 $k=r+q$。
+
+选出这 $q$ 个一游程有 $\binom rq=\binom r{k-r}$ 种方法。
+最小总长度为 $1+2r+q=1+r+k$。
+额外长度只能加到最初的一游程、$r$ 个零游程或 $q$ 个长一游程，
+共 $k+1$ 个位置；其他一游程必须保持长度一。
+当额外长度非负时，非负整数分配的数量为
+\[
+\binom{n-r-k-1+k}{k}=\binom{n-r-1}{k}.
+\]
+当额外长度为负时，式 \eqref{eq:binom-convention} 使数量为零。
+
+再考虑首位为 $0$ 的字符串。此时 $r\ge1$ 个零游程对应 $r$ 个一游程，
+$\occ_{10}=r-1$。若 $q$ 个一游程的长度至少为二，则 $k=r-1+q$。
+选择它们有 $\binom r{k+1-r}$ 种方法。
+最小总长度同样为 $k+r+1$，额外长度有 $r+q=k+1$ 个分配位置，
+因此所得数量为
+\[
+\binom r{k+1-r}\binom{n-r-1}{k}.
+\]
+将两种情形相加，使用 Pascal 恒等式
+$\binom r{k-r}+\binom r{k+1-r}=\binom{r+1}{k+1-r}$，即得 \eqref{eq:runs}。
+$r=0$ 的项只来自首位为 $1$ 的情形；$n=1$ 时该项为一，
+其余项为零，所以没有遗漏最短字符串。
+\end{proof}
+
+\begin{corollary}[正支集与非平凡范围]\label{cor:support}
+对 $k\ge0$，
+\begin{equation}\label{eq:support}
+b_{n,k}>0\quad\Longleftrightarrow\quad
+n\ge k+\lceil k/2\rceil+1.
+\end{equation}
+因而正支集为 $0\le k\le d_n$。若 $k\ge1$ 且 $b_{n,k+1}>0$，则
+\begin{equation}\label{eq:range}
+n\ge k+2+\lceil(k+1)/2\rceil\ge k+3.
+\end{equation}
+\end{corollary}
+\begin{proof}
+式 \eqref{eq:runs} 的第一因子非零恰要求
+$\lceil k/2\rceil\le r\le k+1$，第二因子非零要求 $n\ge r+k+1$。
+必要性随即成立；反过来，取 $r=\lceil k/2\rceil$ 就得到一个正项。
+条件 $k+\lceil k/2\rceil\le n-1$ 等价于 $k\le\lfloor2(n-1)/3\rfloor$。
+以 $k+1$ 代替 $k$，得到最后的结论。
+\end{proof}
+
+式 \eqref{eq:range} 有一个重要用途：
+若右邻项 $b_{n,k+1}$ 为零，对数凹不等式已经成立。
+所以所有需要实质证明的情形都落在 $k\ge1$、$n\ge k+3$ 内；
+后面的倒易多项式因而不会产生负幂。
+
+\section{辅助多项式与自足的系数工具}\label{sec:tools}
+\subsection{铺砖多项式及其差式}
+对 $j\ge0$ 定义
+\begin{equation}\label{eq:Q}
+q_{j,r}=\binom{r+1}{j+1-r},\qquad
+Q_j(z)=\sum_{r\ge0}q_{j,r}z^r.
+\end{equation}
+第一因子还具有铺砖意义：用长度一、二的砖铺长度 $j+2$ 的板，
+若砖数为 $r+1$，则长度二的砖数为 $j+1-r$，
+相应铺法数正是 $q_{j,r}$。
+
+\begin{lemma}[实根与 Cassini 恒等式]\label{lem:Q}
+$Q_j$ 的次数为 $j+1$，最小次数为 $\lceil j/2\rceil$，并且
+\begin{equation}\label{eq:Q-factor}
+Q_j(z)=z^{\lceil j/2\rceil}
+\prod_{a=1}^{\lfloor(j+2)/2\rfloor}
+\left(z+4\cos^2\frac{a\pi}{j+3}\right).
+\end{equation}
+特别地，其全部根为非正实数。对 $k\ge1$，
+\begin{equation}\label{eq:cassini}
+Q_k(z)^2-Q_{k-1}(z)Q_{k+1}(z)=(-z)^k.
+\end{equation}
+\end{lemma}
+\begin{proof}
+令
+\[
+H_L(x)=\sum_{a=0}^{\lfloor L/2\rfloor}\binom{L-a}{a}x^a.
+\]
+按第一块砖的长度分解，$H_0=H_1=1$，
+$H_L=H_{L-1}+xH_{L-2}$。
+对 $0<\theta<\pi/2$，代入 $x=-1/(4\cos^2\theta)$，
+用初值和递推直接核验
+\[
+H_L\left(-\frac1{4\cos^2\theta}\right)
+=\frac{\sin((L+1)\theta)}{(2\cos\theta)^L\sin\theta}.
+\]
+取 $\theta=a\pi/(L+1)$，$1\le a\le\lfloor L/2\rfloor$，
+得到 $\lfloor L/2\rfloor$ 个不同的负根。
+这正是 $H_L$ 的次数，因此已经列出全部根。
+其常数项为一，于是
+\[
+H_L(x)=\prod_{a=1}^{\lfloor L/2\rfloor}
+\left(1+4x\cos^2\frac{a\pi}{L+1}\right).
+\]
+将求和指标反向可得 $Q_j(z)=z^{j+1}H_{j+2}(1/z)$，从而得
+\eqref{eq:Q-factor}，包括零根的重数。
+
+另一方面，$Q_0=1+z$、$Q_1=2z+z^2$，
+且 $Q_j=z(Q_{j-1}+Q_{j-2})$ 对 $j\ge2$ 成立。
+记 $\Delta_k=Q_k^2-Q_{k-1}Q_{k+1}$，则 $\Delta_1=-z$，
+而递推给出
+\[
+\Delta_k=z(Q_kQ_{k-2}-Q_{k-1}^2)=-z\Delta_{k-1}\qquad(k\ge2).
+\]
+归纳即得 \eqref{eq:cassini}。
+\end{proof}
+
+\subsection{系数提取为何保留需要的性质}
+接下来的工具只作用于非负线性形式的乘积，
+不需要假设 $B_n(t)$ 实根，也不需要调用一般的稳定化定理。
+
+\begin{definition}
+实系数二元多项式 $P(X,Y)$ 称为实稳定，
+若 $\Impart X>0$、$\Impart Y>0$ 时 $P(X,Y)\ne0$。
+零多项式单独处理，不包含在此定义中。
+\end{definition}
+
+\begin{lemma}[线性形式乘积的系数提取]\label{lem:extract}
+设
+\[
+G(X,Y,Z)=c\prod_{i=1}^M(\alpha_iX+\beta_iY+\gamma_iZ),
+\]
+其中 $c>0$，$\alpha_i,\beta_i,\gamma_i\ge0$ 且 $\alpha_i+\beta_i>0$。
+则对每个非负整数 $a$，$[Z^a]G$ 为零或为实稳定多项式。
+\end{lemma}
+\begin{proof}
+固定上半平面的 $X,Y$。记 $d=\#\{i:\gamma_i>0\}$。
+作为 $Z$ 的多项式，$G$ 的最高系数为
+\[
+c\left(\prod_{\gamma_i>0}\gamma_i\right)
+\left(\prod_{\gamma_i=0}(\alpha_iX+\beta_iY)\right)\ne0.
+\]
+所以它的次数恒为 $d$，与所选 $X,Y$ 无关。
+当 $d>0$ 时，其根
+$-(\alpha_iX+\beta_iY)/\gamma_i$ 都严格位于下半平面。
+
+若非常数多项式 $p$ 的全部根 $\lambda_i$ 在下半平面，
+则在 $\Impart Z\ge0$ 上
+\[
+\frac{p'(Z)}{p(Z)}=\sum_i\frac1{Z-\lambda_i}
+\]
+的虚部严格为负。因此 $p'$ 在该闭半平面也没有根。
+反复求导，直到非零常数阶段，这一性质一直保持。
+当 $0\le a\le d$ 时，$p^{(a)}(0)\ne0$；
+当 $a>d$ 时导数恒为零。
+由 $[Z^a]G=p^{(a)}(0)/a!$，所需结论成立。
+\end{proof}
+
+\begin{lemma}[二元齐次因式与系数对数凹]\label{lem:homogeneous}
+设 $P(X,Y)$ 非零、齐次、实稳定，且所有系数非负。
+则存在 $c>0$、非负整数 $\alpha,\beta$ 及正数 $a_i,b_i$，使
+\begin{equation}\label{eq:binary-factor}
+P(X,Y)=cX^\alpha Y^\beta\prod_i(a_iX+b_iY).
+\end{equation}
+此外，若 $P=\sum_{j=0}^d p_jX^jY^{d-j}$，则 $(p_j)$ 对数凹且没有内部零。
+\end{lemma}
+\begin{proof}
+若 $P(t,1)$ 有上半平面根 $t$，
+选择幅角 $\varepsilon>0$ 充分小的 $Y$，使 $X=tY$ 仍在上半平面。
+齐次性给出 $P(X,Y)=Y^dP(t,1)=0$，与稳定性矛盾。
+实系数也排除下半平面根，非负系数排除正实根。
+提出零根及纯 $Y$ 因子，即得 \eqref{eq:binary-factor}。
+
+下面直接证明其系数对数凹性。若非负序列 $(u_j)$ 对数凹且无内部零，
+令 $v_j=a u_j+b u_{j-1}$，其中 $a,b\ge0$，则
+\begin{align*}
+v_j^2-v_{j-1}v_{j+1}
+={}&a^2(u_j^2-u_{j-1}u_{j+1})
++b^2(u_{j-1}^2-u_{j-2}u_j)\\
+&+ab(u_ju_{j-1}-u_{j-2}u_{j+1})\ge0.
+\end{align*}
+前两项非负。若最后一项的右侧乘积非零，四项均处于连续的正支集内，
+由相邻比递减得到 $u_ju_{j-1}\ge u_{j-2}u_{j+1}$；
+否则该比较直接成立。
+乘一个非负线性因子也保持支集连续。
+从单项式起逐个乘因子，就得到结论。
+\end{proof}
+
+\section{把目标差式分解为固定次数层}\label{sec:reduction}
+依据游程公式，定义
+\begin{equation}\label{eq:F}
+F_{n,j}(z)=\sum_{r\ge0}q_{j,r}\binom{n-r-1}{j}z^r,\qquad
+F_{n,j}(1)=b_{n,j}.
+\end{equation}
+对固定 $k$，令
+\begin{equation}\label{eq:D}
+D_{n,k}(z)=F_{n,k}(z)^2-F_{n,k-1}(z)F_{n,k+1}(z).
+\end{equation}
+我们最终只需证明 $D_{n,k}(1)\ge0$。
+不过，将 $z$ 的次数逐层固定，会将两条不同统计量的比较拆成两个可处理的比较。
+
+固定 $k\ge1$、$n\ge k+3$ 和整数 $R>k$。
+以下求和均为 $0\le r\le R$，并始终记 $s=R-r$。
+定义
+\begin{align}
+a_r&=q_{k,r}q_{k,s},&
+c_r&=q_{k-1,r}q_{k+1,s},\label{eq:ac}\\
+W_r&=\binom{n-r-1}{k}\binom{n-s-1}{k},&
+U_r&=\binom{n-r-1}{k-1}\binom{n-s-1}{k+1}.\label{eq:WU}
+\end{align}
+于是
+\begin{equation}\label{eq:layer}
+[z^R]D_{n,k}=\sum_r a_rW_r-\sum_r c_rU_r.
+\end{equation}
+其中 $a_r,c_r$ 来自铺砖部分，$W_r,U_r$ 来自额外长度分配，
+亦可理解为在两个尾词中选定相应数量的位置。
+
+证明的核心是以下两步链条：
+\begin{equation}\label{eq:chain}
+\sum_r c_rU_r
+\ \le\ \sum_r c_rW_r
+\ \le\ \sum_r a_rW_r.
+\end{equation}
+第一步保持铺砖系数 $c_r$，将尾词的选位数 $k-1,k+1$ 平衡为 $k,k$。
+第二步保持平衡后的尾词权重 $W_r$，比较两个铺砖分布。
+这两步分别在后面两节证明，彼此不以原对数凹命题为前提。
+
+\section{第一步比较：尾词平衡}\label{sec:balance}
+\begin{proposition}\label{prop:balance}
+在式 \eqref{eq:ac}、\eqref{eq:WU} 的记号与范围内，
+\begin{equation}\label{eq:balance}
+\sum_r c_rU_r\le\sum_r c_rW_r.
+\end{equation}
+\end{proposition}
+\begin{proof}
+若 $R>2k+2$，由 $\deg Q_{k-1}=k$、$\deg Q_{k+1}=k+2$，
+所有 $c_r$ 都为零。以下设 $R\le2k+2$。
+
+\textbf{先构造具有实稳定性的固定次数核。}
+令
+\[
+C_R(X,Y)=\sum_r c_rX^rY^s.
+\]
+把 $Q_j$ 齐次化至其次数 $j+1$：
+\[
+\widetilde Q_j(X,Z)=\sum_rq_{j,r}X^rZ^{j+1-r}.
+\]
+由式 \eqref{eq:Q-factor}，这是单项式与正系数线性形式的乘积。
+并且
+\[
+C_R(X,Y)=[Z^{2k+2-R}]
+\bigl(\widetilde Q_{k-1}(X,Z)\widetilde Q_{k+1}(Y,Z)\bigr).
+\]
+每个因子都符合引理 \ref{lem:extract} 的条件，
+所以 $C_R$ 为零或实稳定。若为零，命题平凡；以下设其非零。
+
+\textbf{再把尾词的二项式权重装入同一个多项式。}
+由引理 \ref{lem:homogeneous}，写
+$C_R=cX^\alpha Y^\beta\prod_i(a_iX+b_iY)$。
+其中纯 $X$、纯 $Y$ 因子已经提出，故 $a_i,b_i>0$。
+因为 $\deg_X C_R\le k$、$\deg_Y C_R\le k+2$，
+以及 $n-1\ge k+2$，倒易式
+\begin{align}
+T_R(X,Y)
+&=X^{n-1}Y^{n-1}C_R(X^{-1},Y^{-1})\notag\\
+&=\sum_r c_rX^{n-r-1}Y^{n-s-1}\label{eq:T}\\
+&=cX^{n-1-\deg_X C_R}Y^{n-1-\deg_Y C_R}
+\prod_i(a_iY+b_iX)\notag
+\end{align}
+的所有幂次均非负。
+因此 $Z_R(x,y)=T_R(1+x,1+y)$ 是非负仿射线性形式的乘积，
+每个因子的常数项均为正。
+
+其总次数为 $d_0=2n-2-R$。
+令总次数 $2k$ 的齐次部分为
+\[
+K_R(x,y)=\sum_{j=0}^{2k}h_jx^jy^{2k-j}.
+\]
+若 $d_0<2k$，则全部 $h_j$ 为零，命题已成立。
+否则，把 $Z_R$ 每个仿射因子的常数项乘共同变量 $w$，
+再提取 $w^{d_0-2k}$ 的系数，所得正是 $K_R$。
+再次使用引理 \ref{lem:extract}，$K_R$ 为零或实稳定。
+排除平凡的零情形，引理 \ref{lem:homogeneous} 给出
+\begin{equation}\label{eq:h-lc}
+h_k^2\ge h_{k-1}h_{k+1}.
+\end{equation}
+
+\textbf{最后利用铺砖分布的方向偏置，确定中央系数的大小。}
+当 $r\le s$ 时，
+\begin{equation}\label{eq:c-bias}
+c_r\ge c_s.
+\end{equation}
+事实上，在共同正支集上，
+\[
+\frac{q_{k+1,r}}{q_{k-1,r}}
+=\frac{(2r+1-k)(2r-k)}{(k+1-r)(k+2-r)}
+\]
+随 $r$ 递增。
+两列的正支集分别为
+$[\lceil(k-1)/2\rceil,k]$ 与 $[\lceil(k+1)/2\rceil,k+2]$。
+若交叉积 $q_{k-1,s}q_{k+1,r}$ 正且 $r\le s$，
+则 $r,s$ 必在共同正支集，所以上述比值证明
+$q_{k-1,r}q_{k+1,s}\ge q_{k-1,s}q_{k+1,r}$；
+若右侧为零，该比较直接成立。
+
+记 $A=n-r-1$、$B=n-s-1$。
+当 $r\le s$ 时 $A\ge B$，并有
+\begin{equation}\label{eq:binom-order}
+\binom A{k+1}\binom B{k-1}
+\ge\binom A{k-1}\binom B{k+1}.
+\end{equation}
+这由比值
+$(A-k+1)(A-k)/(k(k+1))$ 在分母非零的范围 $A\ge k-1$ 内递增得到；
+其他情况按零支集直接检验。
+将 $r,s$ 配对，式 \eqref{eq:c-bias}、\eqref{eq:binom-order} 给出
+\begin{align*}
+h_{k+1}-h_{k-1}
+={}&\sum_{r<s}(c_r-c_s)
+\left(\binom A{k+1}\binom B{k-1}
+-\binom A{k-1}\binom B{k+1}\right)\ge0.
+\end{align*}
+结合 \eqref{eq:h-lc}，非负性使 $h_k\ge h_{k-1}$。
+由系数的定义，
+\[
+h_k=\sum_r c_rW_r,\qquad h_{k-1}=\sum_r c_rU_r.
+\]
+因此 \eqref{eq:balance} 成立。
+\end{proof}
+
+这一步并非对每个 $r$ 逐项比较 $U_r$ 与 $W_r$；
+所需不等式来自固定次数核的整体实稳定性和反射偏置。
+第二步将使用不同的机制，只比较已经对称的权重 $W_r$。
+
+\section{第二步比较：中央集中}\label{sec:concentration}
+\begin{proposition}\label{prop:concentration}
+在相同记号与范围内，
+\begin{equation}\label{eq:concentration}
+\sum_r c_rW_r\le\sum_r a_rW_r.
+\end{equation}
+\end{proposition}
+\begin{proof}
+$R>2k+2$ 时所有项为零。以下设 $k<R\le2k+2$。
+令 $c_r^*=(c_r+c_s)/2$。因为 $a_r=a_s$、$W_r=W_s$，
+可以把待比较的差写为
+\[
+\sum_r(a_r-c_r^*)W_r.
+\]
+我们先确定这个对称差列的符号，再用权重的中央单调性求和。
+
+设
+\begin{align*}
+d&=r-s,&p&=R-k,&L&=2k+2-R,\\
+A&=p+1,&B&=L+2,&P&=AB,&S&=A+B=k+5,\\
+H&=2A+B-2=R+4,&J&=2S-3=2k+7.
+\end{align*}
+其中 $p\ge1$、$L\ge0$。
+$a_r>0$ 的支集是中央对称整数区间，在其中
+$|d|\le\min(p,L)$，故 $A\pm d>0$、$B\pm d>0$。
+用二项式相邻比计算得
+\begin{align}
+\frac{c_r}{a_r}
+&=\frac{(L-d)(p-d)}{(p+1+d)(L+2+d)}\notag\\
+&=1-\frac{H+Jd}{P+Sd+d^2}.\label{eq:ratio}
+\end{align}
+例如，其中第一因子的比为
+$(k+1-r)/(2r+1-k)$，第二因子的比为
+$(2s-k)/(k+2-s)$；代入 $r=(R+d)/2$ 即得到首行。
+在支集端点某个分子为零时，同一公式仍成立。
+
+把 \eqref{eq:ratio} 与其 $d\mapsto-d$ 的版本平均，得到
+\begin{equation}\label{eq:single-cross}
+\frac{c_r^*}{a_r}-1
+=\frac{-HP+(JS-H)d^2}{(P+d^2)^2-S^2d^2}.
+\end{equation}
+其分母为
+$(A+d)(A-d)(B+d)(B-d)>0$，而
+\[
+JS-H=2k^2+17k+31-R>0.
+\]
+因此 $a_r-c_r^*$ 的符号随 $|d|$ 增大至多从正变负一次。
+在 $a_r=0$ 的外侧，其差本来就非正。
+这证明差列在中央非负、外侧非正，不会再次变为正。
+
+Cassini 恒等式 \eqref{eq:cassini} 给出零总质量：
+\begin{equation}\label{eq:zero-mass}
+\sum_r(a_r-c_r^*)
+=[z^R](Q_k^2-Q_{k-1}Q_{k+1})=0,
+\end{equation}
+因为 $R>k$。
+另一方面，$W_r$ 对称且随 $|r-s|$ 不增。
+为明确这一点，若 $r<s$ 且 $W_r>0$，
+记 $A_0=n-r-1\ge B_0+1$、$B_0=n-s-1\ge k$，则向中央移动一步后
+\[
+\frac{W_{r+1}}{W_r}
+=\frac{A_0-k}{A_0}\frac{B_0+1}{B_0+1-k}\ge1,
+\]
+最后一个不等式等价于 $k(A_0-B_0-1)\ge0$。
+若 $W_r=0$，向中央移动不会违反非负单调性。
+
+若差列恒为零，则结论已得。
+否则，由 \eqref{eq:zero-mass}，它有正项和负项。
+单次变号性质使所有正项比所有负项更靠近中央，
+所以可以选取 $w_0$，使正项处 $W_r\ge w_0$、负项处 $W_r\le w_0$。
+因此
+\begin{align*}
+\sum_r(a_r-c_r^*)W_r
+&=\sum_r(a_r-c_r^*)(W_r-w_0)
++w_0\sum_r(a_r-c_r^*)\\
+&\ge0.
+\end{align*}
+最后使用 $\sum c_r^*W_r=\sum c_rW_r$，得到 \eqref{eq:concentration}。
+\end{proof}
+
+\begin{corollary}[所有高次层非负]\label{cor:high}
+对 $k\ge1$、$n\ge k+3$ 和 $R>k$，
+\begin{equation}\label{eq:high-positive}
+[z^R]D_{n,k}(z)\ge0.
+\end{equation}
+\end{corollary}
+\begin{proof}
+命题 \ref{prop:balance}、\ref{prop:concentration} 给出链条 \eqref{eq:chain}，
+代回 \eqref{eq:layer} 即可。
+\end{proof}
+
+至此，除最低次数外的全部层已经处理完毕。
+不能直接宣称 $D_{n,k}$ 的全部系数非负：
+Cassini 恒等式在奇数 $k$ 时确实留下一个负项。
+下面明确计算这一异常，并证明下一项足以补偿它。
+
+\section{最低次数与奇数指标的补偿}\label{sec:exception}
+\subsection{最低两层的精确系数}
+引理 \ref{lem:Q} 表明 $F_{n,j}$ 不含次数小于 $\lceil j/2\rceil$ 的项。
+因此，$R<k$ 时 $[z^R]D_{n,k}=0$。
+若 $k=2m$ 为偶数，$F_{n,k-1}F_{n,k+1}$ 的最小可能次数为 $k+1$，
+而
+\begin{equation}\label{eq:even-low}
+[z^k]D_{n,k}=\binom{n-m-1}{k}^2\ge0.
+\end{equation}
+由推论 \ref{cor:high}，偶数情形已经完全解决。
+
+设 $k=2m+1$ 为奇数，记 $N=n-m-2$。
+最低层只来自乘积 $F_{n,k-1}F_{n,k+1}$，故
+\begin{equation}\label{eq:odd-low}
+[z^k]D_{n,k}=-A_0,\qquad
+A_0=\binom{N+1}{k-1}\binom N{k+1}.
+\end{equation}
+为计算紧邻层，所需的铺砖系数为
+\begin{align*}
+q_{k,m+1}&=m+2,\\
+q_{k-1,m}&=q_{k+1,m+1}=1,\\
+q_{k-1,m+1}&=\binom{m+2}{2},&
+q_{k+1,m+2}&=\binom{m+3}{2}.
+\end{align*}
+于是
+\begin{align}
+E:=[z^{k+1}]D_{n,k}
+={}&(m+2)^2\binom Nk^2\notag\\
+&-\binom{m+3}{2}\binom{N+1}{k-1}\binom{N-1}{k+1}\notag\\
+&-\binom{m+2}{2}\binom N{k-1}\binom N{k+1}.\label{eq:E}
+\end{align}
+
+\subsection{完全补偿的显式界}
+\begin{proposition}\label{prop:compensation}
+若式 \eqref{eq:odd-low} 中 $A_0>0$，则 $E>A_0$。
+更精确地，令 $C=\binom Nk$，则
+\begin{equation}\label{eq:gap-bound}
+E-A_0\ge
+\frac{2m^2+8m+17}{6(k+1)}C^2>0.
+\end{equation}
+\end{proposition}
+\begin{proof}
+$A_0>0$ 要求 $N\ge k+1$。
+令 $h=N-k\ge1$，则 $C>0$。
+式 \eqref{eq:E} 中两种负乘积分别满足
+\begin{align}
+\frac{\binom{N+1}{k-1}\binom{N-1}{k+1}}{C^2}
+&=\frac{k}{k+1}
+\frac{(N+1)h(h-1)}{N(h+1)(h+2)}
+\le\frac{k}{k+1},\label{eq:negative-one}\\
+\frac{\binom N{k-1}\binom N{k+1}}{C^2}
+&=\frac{k}{k+1}\frac h{h+1}
+\le\frac{k}{k+1}.\label{eq:negative-two}
+\end{align}
+其中 \eqref{eq:negative-one} 的不等式由
+\[
+N(h+1)(h+2)-(N+1)h(h-1)
+=3h^2+(4k+3)h+2k>0
+\]
+得到。利用
+$\binom{m+3}{2}+\binom{m+2}{2}=(m+2)^2$，有
+\begin{equation}\label{eq:E-bound}
+E\ge\frac{(m+2)^2}{k+1}C^2.
+\end{equation}
+
+另一方面，令整数 $\ell=h+1\ge2$。直接相除得
+\begin{align}
+\frac{A_0}{C^2}
+&=\frac{k}{k+1}
+\frac{(\ell+k)(\ell-1)}{\ell(\ell+1)}\notag\\
+&=\frac{k}{k+1}
+\left(\frac{\ell-1}{\ell+1}
++k\frac{\ell-1}{\ell(\ell+1)}\right)
+\le\frac{k}{k+1}\left(1+\frac k6\right).\label{eq:A-bound}
+\end{align}
+这里 $\frac{\ell-1}{\ell+1}\le1$；
+又因 $\ell$ 是不小于二的整数，
+$(\ell-2)(\ell-3)\ge0$，所以
+$\frac{\ell-1}{\ell(\ell+1)}\le\frac16$。
+这一界使用了整数性，并非对所有实数 $\ell\ge2$ 作同样断言。
+
+最后，$k=2m+1$ 给出
+\[
+(m+2)^2-k-\frac{k^2}{6}
+=\frac{2m^2+8m+17}{6}>0.
+\]
+从 \eqref{eq:E-bound} 减去 \eqref{eq:A-bound} 即得 \eqref{eq:gap-bound}。
+\end{proof}
+
+若 $A_0=0$，最低层并非负项，高次层非负性已经足够。
+若 $A_0>0$，命题 \ref{prop:compensation} 表明最低两层的系数之和严格为正。
+因此无论哪种情形，奇数指标都不留下未处理的异常。
+
+\section{主定理的合成与排列推论}\label{sec:finish}
+\begin{proof}[定理 \ref{thm:main} 的证明]
+正支集已由推论 \ref{cor:support} 确定。
+若 $k\le0$ 或 $b_{n,k+1}=0$，不等式直接成立。
+其余情形由 \eqref{eq:range} 落在前述各命题适用的范围内。
+
+偶数 $k$ 时，次数小于 $k$ 的系数为零，
+最低层由 \eqref{eq:even-low} 非负，其余层由 \eqref{eq:high-positive} 非负。
+因此 $D_{n,k}(1)\ge0$。
+奇数 $k$ 时，次数小于 $k$ 的系数仍为零，
+最低层与下一层之和为 $E-A_0\ge0$，
+剩余层亦非负，所以仍有 $D_{n,k}(1)\ge0$。
+结合 \eqref{eq:F}、\eqref{eq:D}，
+\[
+D_{n,k}(1)=b_{n,k}^2-b_{n,k-1}b_{n,k+1},
+\]
+对数凹性得证。
+
+若 $1\le k<d_n$，则右邻项为正。
+偶数 $k=2m$ 时，\eqref{eq:support} 对 $k+1$ 给出 $n\ge3m+3$，
+所以 \eqref{eq:even-low} 严格为正。
+奇数 $k=2m+1$ 时，同一支集条件给出 $n\ge3m+4$，
+故 $N\ge k+1$、$A_0>0$，命题 \ref{prop:compensation} 给出严格的正余量。
+因此正支集内部的全部不等式都是严格的。
+\end{proof}
+
+\begin{corollary}[两个等价的排列分支]\label{cor:permutations}
+对 $n\ge1$，集合 $\mathfrak S_n(123,132)$ 与 $\mathfrak S_n(132,213)$
+上的大下降数计数序列均对数凹。
+\end{corollary}
+\begin{proof}
+大下降指满足 $\pi_i>\pi_{i+1}+1$ 的位置。
+由 \cite[Lemmas 3.6 and 3.9]{ERZ} 的统计保持双射，
+这两个计数序列均逐项等于 $(b_{n,k})$。
+定理 \ref{thm:main} 因而直接适用。
+\end{proof}
+
+整个证明使用的逻辑链为：
+游程分解建立加权系数公式，
+铺砖实根与两次系数提取建立尾词平衡，
+Cassini 零总质量与单次变号建立中央集中，
+两步比较处理所有高次层，
+显式补偿处理唯一最低异常。
+各环节的结论均在应用前证明，不存在向另一个未证对数凹命题的归约。
+
+\appendix
+\section{生成函数、递推与小规模核对}\label{sec:appendix}
+本附录仅提供与已有计数结构的衔接，不参与主定理的逻辑依赖。
+令 $B_n(t)=\sum_kb_{n,k}t^k$，
+$G(x,t)=\sum_{n\ge1}B_n(t)x^n$。
+正长度零游程的生成函数为 $Z=x/(1-x)$。
+一个紧随零游程的一游程，长度一时贡献 $x$，长度至少为二时贡献
+$tx^2/(1-x)$，故记
+$A=x+tx^2/(1-x)$。
+首位为一时最初的一游程贡献 $x/(1-x)$；
+首位为零时最初的一对游程贡献 $ZA$。
+每个后续的零、一游程对额外贡献一次 $10$，故其权重为 $tZA$。
+因此
+\begin{align}
+G(x,t)
+&=\frac{x/(1-x)+ZA}{1-tZA}\notag\\
+&=\frac{x\{1+(t-1)x^2\}}
+{1-2x+(1-t)x^2+t(1-t)x^3}.\label{eq:GF}
+\end{align}
+比较 $x^n$ 系数，得到
+\[
+B_n(t)=2B_{n-1}(t)+(t-1)B_{n-2}(t)
++t(t-1)B_{n-3}(t)\qquad(n\ge4),
+\]
+初值为 $B_1=1$、$B_2=2$、$B_3=2+2t$。
+例如
+\[
+B_4=2+5t+t^2,\qquad B_5=2+8t+6t^2.
+\]
+这些式子与游程公式一致，也与 \cite{ERZ} 中的已有生成函数相容。
+
+正文对所有 $n,k,R$ 的证明由所列恒等式、不等式及支集边界独立组成；
+上述初值和小规模例子只用于核对计数定义，不承担全参数论证。
+配套 LaTeX 源文件为独立文档，可用 XeLaTeX 两遍编译，
+无需额外图片、数据文件或外部数学计算系统。
+
+\begin{thebibliography}{9}
+\bibitem{ERZ}
+Sergi Elizalde, Johnny Rivera Jr., and Yan Zhuang.
+\newblock Counting Pattern-Avoiding Permutations by Big Descents.
+\newblock \emph{Annals of Combinatorics}, 2026.
+\newblock DOI: \href{https://doi.org/10.1007/s00026-026-00805-1}{10.1007/s00026-026-00805-1}.
+\end{thebibliography}
+\end{document}
