@@ -1,0 +1,751 @@
+% Compile with XeLaTeX twice. Revised research manuscript, 2026-10-13.
+\documentclass[a4paper,11pt]{article}
+\usepackage{fontspec,xeCJK}
+\setmainfont{Times New Roman}
+\setCJKmainfont[BoldFont=SimHei,ItalicFont=KaiTi]{SimSun}
+\setCJKsansfont{SimHei}
+\setCJKmonofont{FangSong}
+\usepackage[margin=24mm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array}
+\usepackage{hyperref,fancyhdr}
+\hypersetup{hidelinks,pdftitle={孙智伟一个加权二项式和整除猜想的证明},pdfauthor={徐志文}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small 加权二项式和的整除性}
+\fancyhead[R]{\small 徐志文}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.15em}
+\setlength{\emergencystretch}{2em}
+\linespread{1.10}
+\allowdisplaybreaks[2]
+\numberwithin{equation}{section}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\refname}{参考文献}
+\renewcommand{\proofname}{证明}
+\newtheoremstyle{chinese}{6pt}{6pt}{\normalfont}{} {\bfseries}{}{0.5em}{}
+\theoremstyle{chinese}
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}{引理}[section]
+\newtheorem{proposition}[lemma]{命题}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\diag}{\Delta}
+\newcommand{\J}{\mathcal J}
+\title{\textbf{孙智伟一个加权二项式和整除猜想的证明}}
+\author{徐志文\\[3pt]
+\small 武汉大学，武汉 430072\\
+\small E-mail: \texttt{2024302031067@whu.edu.cn}}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+设 $a_n=\sum_{i,j=0}^{n}\binom ni^2\binom nj^2\binom{i+j}{i}2^{i+j}3^{2n-i-j}$。
+证明对每个正整数 $n$，$n$ 整除 $2\sum_{k=0}^{n-1}(3k+2)a_k$，
+从而证明孙智伟猜想 4.3(ii) 中的整性断言。
+利用对角系数表示和多项式微分恒等式建立统一分母界，再证明二进与三进整性。
+三进整性的证明用到奇次幂展开和有限原函数的余项估计。
+\end{abstract}
+\noindent\textbf{关键词：}二项式和；整除性；对角系数；多项式证书；局部整性
+
+\noindent\textbf{MR(2020)分类号：}11B65，11A07，05A19\qquad
+\textbf{中图分类号：}O156.1
+
+\bigskip
+\begin{center}
+\textbf{Proof of a divisibility conjecture of Zhi-Wei Sun\\
+on a weighted binomial sum}\\[6pt]
+Zhiwen Xu\\
+\small Wuhan University, Wuhan 430072, China
+\end{center}
+\noindent\textbf{Abstract.}
+Let $a_n=\sum_{i,j=0}^{n}\binom ni^2\binom nj^2\binom{i+j}{i}2^{i+j}3^{2n-i-j}$.
+We prove that $n$ divides $2\sum_{k=0}^{n-1}(3k+2)a_k$ for every positive integer $n$.
+This proves the integrality assertion in Sun's Conjecture 4.3(ii).
+A diagonal coefficient representation and an explicit differential certificate
+give a uniform denominator bound. Integrality at the primes 2 and 3 then removes
+the remaining possible denominator factors. For the prime 3, we express the generating functions as finite sums of odd powers
+and estimate the remainders of truncated primitives.
+
+\medskip
+\noindent\textbf{Keywords:} binomial sum; divisibility; diagonal coefficient;
+polynomial certificate; local integrality.
+
+\newpage
+\section{引言}
+孙智伟\cite{Sun2012}研究了 Apéry 多项式
+\[
+\mathcal A_n(x)=\sum_{k=0}^n\binom nk^2\binom{n+k}{k}^2x^k
+\]
+及其加权和，证明了
+$n^{-1}\sum_{k=0}^{n-1}(2k+1)\mathcal A_k(x)\in\Z[x]$。
+Guo\cite{Guo2016}通过 Delannoy 多项式平方的求和公式，
+证明了若干涉及偶次幂的有理和在整数点取整数值。
+
+对非负整数 $d,n$，孙智伟\cite{Sun2026}引入了多项式族
+\begin{equation}\label{eq:Sun-polynomial}
+S_n^{(d)}(x)=\sum_{i,j=0}^n\binom ni^d\binom nj^d\binom{i+j}{i}x^{i+j}
+\qquad(d,n\ge0),
+\end{equation}
+并提出了相关的整性与素数幂同余猜想。
+本文研究 $d=2$、$x=2/3$ 时的整数序列
+$a_n=9^nS_n^{(2)}(2/3)$，证明如下结果。
+\begin{theorem}\label{thm:main}
+对每个非负整数 $n$，定义
+\begin{equation}\label{eq:sequence}
+a_n=\sum_{i=0}^{n}\sum_{j=0}^{n}
+\binom ni^2\binom nj^2\binom{i+j}{i}
+2^{i+j}3^{2n-i-j}.
+\end{equation}
+则对每个正整数 $n$，都有
+\begin{equation}\label{eq:goal}
+n\ \bigg|\ 2\sum_{k=0}^{n-1}(3k+2)a_k.
+\end{equation}
+\end{theorem}
+
+定理~\ref{thm:main}~证明了文献\cite[Conjecture 4.3(ii)]{Sun2026}中的第一条整性断言。
+
+证明利用二项式变换和多项式微分恒等式建立统一分母界，再证明二进与三进整性。
+二进整性由模 $2^s$ 的周期性得到；三进部分将相应的生成函数写成
+$(1-16x)^{\alpha/2}$ 的有限和，其中 $\alpha$ 为奇数，继而估计有限原函数的余项。
+求和问题中的证书方法可参见 Zeilberger\cite{Zeilberger1991}。
+
+\subsection*{记号与形式系数约定}
+对每个正整数 $n$，记
+\begin{equation}\label{eq:T}
+T_n=\frac2n\sum_{k=0}^{n-1}(3k+2)a_k\in\Q.
+\end{equation}
+对素数 $p$，$v_p(q)$ 表示非零有理数 $q$ 中 $p$ 的指数，并约定 $v_p(0)=+\infty$。
+记 $\Z_{(p)}=\{q\in\Q:v_p(q)\ge0\}$。
+我们依次证明
+\begin{equation}\label{eq:threeclaims}
+24T_n\in\Z,\qquad v_2(T_n)\ge0,\qquad v_3(T_n)\ge0.
+\end{equation}
+由这三式可得 $T_n\in\Z$。
+
+以下生成函数均视为形式幂级数，$[x^j]F$ 表示 $F$ 的第 $j$ 个系数。
+对非负整数 $k$，约定 $j>k$ 时 $\binom{k}{j}=0$。
+
+\section{统一分母界}
+\subsection{对角系数与二项式变换}
+令 $\diag_r F=[u^rv^rz^r]F$，并定义
+\begin{align}
+\Psi&=(1+2u)(1+2v)(1+3u+z)(1+z+3vz),\\
+\Phi&=\Psi-uvz.\label{eq:Phi}
+\end{align}
+先取 $u,v$ 的系数，有
+\begin{equation}
+\begin{split}
+[u^kv^k]\Psi^k
+=\sum_{i,j=0}^k\binom ki^2\binom kj^2
+2^{i+j}3^{2k-i-j}z^{k-j}(1+z)^{i+j}.
+\end{split}
+\end{equation}
+由于 $[z^k]z^{k-j}(1+z)^{i+j}=\binom{i+j}{j}$，得
+\begin{equation}\label{eq:adiag}
+a_k=\diag_k\Psi^k.
+\end{equation}
+定义
+\begin{equation}\label{eq:c}
+c_r=\diag_r\Phi^r\in\Z\quad(r\ge0),\qquad c_{-1}=0.
+\end{equation}
+由 $\Psi=\Phi+uvz$ 的二项式展开，
+\begin{equation}\label{eq:bintransform}
+a_k=\sum_{r=0}^k\binom kr c_r.
+\end{equation}
+再令
+\begin{equation}\label{eq:b}
+b_m=\frac{2(c_{m-1}+3c_{m-2})}{m}\quad(m\ge1);
+\qquad b_1=2.
+\end{equation}
+利用 $k\binom kr=r\binom kr+(r+1)\binom{k}{r+1}$ 以及逐列求和，
+\begin{equation}
+\sum_{k=r}^{n-1}(3k+2)\binom kr
+=(3r+2)\binom n{r+1}+3(r+1)\binom n{r+2}.
+\end{equation}
+代入 \eqref{eq:bintransform}，整理得
+\begin{equation}
+T_n=2\sum_{r=0}^{n-1}\binom{n-1}{r}
+\frac{(3r+2)c_r+3rc_{r-1}}{r+1}.
+\end{equation}
+因为
+\[
+(3r+2)c_r+3rc_{r-1}
+=3(r+1)(c_r+c_{r-1})-(c_r+3c_{r-1}),
+\]
+所以
+\begin{equation}\label{eq:bridge}
+\displaystyle
+T_n=\sum_{r=0}^{n-1}\binom{n-1}{r}
+\bigl(6(c_r+c_{r-1})-b_{r+1}\bigr).
+\end{equation}
+因此只需证明 $24b_m\in\Z$，即可得到 $24T_n\in\Z$。
+
+\subsection{多项式恒等式与对角系数}
+
+为消去式\eqref{eq:b}中的分母 $m$，将其分子表示为 Euler 导数的对角系数。
+对角系数提取使 Euler 导数产生因子 $m$。令
+\begin{equation}\label{eq:L}
+\Lambda=(u+v+2uv)(u+v+3uv),
+\end{equation}
+并记 $D_u=u\partial_u$、$D_v=v\partial_v$、$D_z=z\partial_z$。
+
+\begin{lemma}[多项式微分恒等式]\label{lem:certificate}
+附录~\ref{sec:certificate}~给出的整数多项式 $P_u,P_v,P_z$ 满足
+\begin{equation}\label{eq:certificate}
+\Phi\Lambda\sum_iD_iP_i-\sum_iP_iD_i(\Phi\Lambda)
+=48uvz(\Phi+3uvz)\Lambda^2,
+\end{equation}
+其中各求和遍历 $i\in\{u,v,z\}$。
+\end{lemma}
+\begin{proof}
+将式\eqref{eq:polysP}代入，两端按 $z$ 展开后具有式\eqref{eq:certificate-table}所列的相同系数。
+\end{proof}
+
+多项式 $P_u,P_v,P_z$ 可用待定系数法求得。取分变量次数范围
+\begin{equation}\label{eq:degree-box}
+\deg_{u,v,z}P_u\le(4,3,2),\quad
+\deg_{u,v,z}P_v\le(3,4,2),\quad
+\deg_{u,v,z}P_z\le(3,3,2).
+\end{equation}
+三个次数上界依次对应变量 $u,v,z$。
+比较式\eqref{eq:certificate}中各单项式的系数，得到关于168个待定系数的线性方程组。
+附录~\ref{sec:certificate}~中的多项式给出其中一组整数解。
+
+由于 $\Lambda(u,0)=u^2$ 是 $\Z[u,u^{-1}]$ 中的单位，$1/\Lambda$ 有如下关于 $v$ 的展开：
+
+\begin{equation}\label{eq:Lexpansion}
+\frac1\Lambda=\sum_{h,j\ge0}(-1)^{h+j}
+v^{h+j}u^{-h-j-2}(1+2u)^h(1+3u)^j.
+\end{equation}
+在 $\Z[u,u^{-1}][[v]][z]$ 中，Euler 微分满足
+\begin{equation}\label{eq:eulerdiag}
+\diag_mD_iF=m\diag_mF\qquad(i=u,v,z).
+\end{equation}
+这是因为 $D_u,D_v,D_z$ 分别将单项式乘以相应变量的指数。
+
+对 $m\ge2$，将 \eqref{eq:certificate} 乘以 $\Phi^{m-2}/(24\Lambda^2)$，由乘积求导法则得
+\begin{equation}\label{eq:parts}
+\begin{split}
+2uvz(\Phi+3uvz)\Phi^{m-2}
+=\frac1{24}\sum_i\left[
+D_i\!\left(\frac{P_i\Phi^{m-1}}\Lambda\right)
+-m\frac{P_i\Phi^{m-2}D_i\Phi}{\Lambda}\right].
+\end{split}
+\end{equation}
+取 $\diag_m$，并应用 \eqref{eq:eulerdiag}，左侧为
+$2(c_{m-1}+3c_{m-2})$，故
+\begin{equation}\label{eq:bcertificate}
+\displaystyle
+b_m=\frac1{24}\diag_m\left[
+\frac{\Phi^{m-2}}\Lambda\sum_iP_i(\Phi-D_i\Phi)\right].
+\end{equation}
+提取 $v^mz^m$ 的系数时，式\eqref{eq:Lexpansion}中只有 $h+j\le m$ 的项有贡献。
+所得表达式是整数系数的 $u$-Laurent 多项式，故
+\begin{equation}\label{eq:b24}
+24b_m\in\Z\quad(m\ge2).
+\end{equation}
+$b_1=2$ 也满足此结论，由 \eqref{eq:bridge} 得
+\begin{equation}\label{eq:T24}
+24T_n\in\Z\qquad(n\ge1).
+\end{equation}
+
+\section{二进整性}
+\begin{lemma}\label{lem:period2}
+对所有整数 $k,s\ge0$，
+\begin{equation}\label{eq:period2}
+a_{k+2^s}\equiv a_k\pmod{2^s}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+$s=0$ 时结论成立。设 $s\ge1$，在 $\Z_{(2)}$ 中写成
+\begin{equation}\label{eq:a2}
+a_k=9^k\sum_{i,j\ge0}\binom ki^2\binom kj^2
+\binom{i+j}{i}\left(\frac23\right)^{i+j},
+\end{equation}
+其中 $i>k$ 时约定 $\binom ki=0$。模 $2^s$ 时只需保留 $i+j<s$ 的项。
+
+对 $1\le i<s$，Vandermonde 恒等式给出
+\[
+\binom{k+2^s}{i}-\binom ki
+=\sum_{h=1}^i\binom{2^s}{h}\binom{k}{i-h}.
+\]
+由 $h\binom{2^s}{h}=2^s\binom{2^s-1}{h-1}$，
+\[
+v_2\!\left(\binom{2^s}{h}\right)
+\ge s-v_2(h)\ge s-\lfloor\log_2 i\rfloor.
+\]
+因此，平方之差满足
+\begin{equation}\label{eq:2bindiff}
+v_2\!\left(\binom{k+2^s}{i}^{\!2}-\binom ki^2\right)
+\ge s-\lfloor\log_2 i\rfloor.
+\end{equation}
+乘上 \eqref{eq:a2} 中的 $2^{i+j}$ 后，该差被 $2^s$ 整除，因为
+$i+j\ge\lfloor\log_2 i\rfloor$。$i=0$ 时因子不变；$j$ 因子同理。
+再由反复平方可得 $9^{2^s}\equiv1\pmod{2^{s+3}}$，故 \eqref{eq:period2} 成立。
+\end{proof}
+
+令 $f(k)=(3k+2)a_k$，则
+\begin{equation}\label{eq:fperiod}
+f(k+2^s)\equiv f(k)\pmod{2^s}.
+\end{equation}
+对任意 $M\ge0,e\ge1$，用归纳法证明
+\begin{equation}\label{eq:blocks}
+2^{e-1}\ \bigg|\ \sum_{k=M}^{M+2^e-1}f(k).
+\end{equation}
+$e=1$ 时成立。对 $e\ge2$，将该区间等分，记两半之和为 $U,V$。
+由 \eqref{eq:fperiod}，$V\equiv U\pmod{2^{e-1}}$。
+归纳假设给出 $2^{e-2}\mid U$，于是 $U+V\equiv2U\equiv0\pmod{2^{e-1}}$。
+
+若 $n=2^eq$，$q$ 为奇数且 $e\ge1$，将 $[0,n)$ 分成 $q$ 个长度为 $2^e$ 的区间，
+由 \eqref{eq:blocks} 得 $2^{e-1}\mid\sum_{k<n}(3k+2)a_k$。故
+\begin{equation}\label{eq:T2}
+v_2(T_n)\ge0\qquad(n\ge1).
+\end{equation}
+$n$ 为奇数时此式由 \eqref{eq:T} 直接成立。
+
+\section{三进整性}\label{sec:three-finite}
+\subsection{奇次幂组合的局部整性引理}
+置 $w=(1-16x)^{1/2}\in\Q[[x]]$，其中 $w(0)=1$。
+对整数 $\alpha$ 和非负整数 $j$，有
+\begin{equation}
+\binom{\alpha/2}{j}\in\mathbb Z[1/2]
+\qquad(\alpha\in\mathbb Z,\ j\ge0).
+\label{eq:three-half-binomial}
+\end{equation}
+其分子和分母分别为
+\(\alpha(\alpha-2)\cdots(\alpha-2j+2)\) 与 \(2^j j!\)。对每个奇素数幂 \(p^e\)，
+因为 \(2\) 在模 \(p^e\) 下可逆，上述 \(j\) 个分子因子中至少有
+\(\lfloor j/p^e\rfloor\) 个被 \(p^e\) 整除。这消去了 \(j!\) 的全部
+奇素因子，证明了 \eqref{eq:three-half-binomial}；若分子为零则结论也成立。
+特别地，每个整数次幂 \(w^\alpha\) 的所有形式幂级数系数都属于
+\(\mathbb Z[1/2]\)。
+
+对 \(H(x)=\sum_{k\ge0}h_kx^k\in\mathbb Q[[x]]\)，定义
+\[
+J_H(x)=\sum_{n\ge1}\frac{2}{n}
+\left(\sum_{k=0}^{n-1}(3k+2)h_k\right)x^n.
+\]
+等价地，$J_H$ 由下列条件确定：
+\begin{equation}
+J_H(0)=0,
+\qquad
+J_H'(x)=\frac{2(3xH'(x)+2H(x))}{1-x}.
+\label{eq:three-primitive-definition}
+\end{equation}
+
+\begin{lemma}[奇次幂组合的三进整性]\label{lem:odd-integrality}
+设 $m\ge1$，且
+\[
+H(x)=\sum_{\substack{\alpha\in2\Z+1\\-4m-1\le\alpha\le m-1}}
+\gamma_\alpha w^\alpha,\qquad \gamma_\alpha\in\Z_{(3)}.
+\]
+则 $3^mJ_H(x)\in\Z_{(3)}[[x]]$。
+此外，对 $H(x)=w^{-1}$，有 $J_H(x)\in\Z_{(3)}[[x]]$。
+\end{lemma}
+\begin{proof}
+由线性性，只需考虑单个奇次幂。
+设 \(\alpha\) 是奇整数，并简记 \(J_\alpha=J_{w^\alpha}\)。由直接微分，
+\begin{equation}
+J_\alpha'(x)=
+\frac{(3\alpha +4)w^\alpha-3\alpha w^{\alpha-2}}{1-x}.
+\label{eq:three-primitive-derivative}
+\end{equation}
+对任意非负整数 \(N\)，令
+\begin{equation}
+\begin{aligned}
+K_{\alpha,N}(x)=-2\sum_{\ell=0}^{N-1}(-15)^\ell\Biggl\{&
+\frac{3\alpha +4}{\alpha-2\ell}\bigl(w^{\alpha-2\ell}-1\bigr)\\
+&-\frac{3\alpha }{\alpha-2\ell-2}\bigl(w^{\alpha-2\ell-2}-1\bigr)
+\Biggr\}.
+\end{aligned}
+\label{eq:three-finite-primitive}
+\end{equation}
+当 \(N=0\) 时，约定 \(K_{\alpha,0}=0\)。由于 \(\alpha\) 为奇数，式中分母均不为零。
+
+有限几何恒等式给出
+\begin{equation}
+\frac{1}{w^2+15}
+=\sum_{\ell=0}^{N-1}(-15)^\ell w^{-2\ell-2}
++\frac{(-15)^N w^{-2N}}{w^2+15}.
+\label{eq:three-finite-geometric}
+\end{equation}
+利用 \(w^2+15=16(1-x)\) 并微分
+\eqref{eq:three-finite-primitive}，得
+\begin{equation}
+J_\alpha'(x)-K_{\alpha,N}'(x)
+=(-15)^N
+\frac{(3\alpha +4)w^{\alpha-2N}-3\alpha w^{\alpha-2N-2}}{1-x}.
+\label{eq:three-remainder-derivative}
+\end{equation}
+两边的原函数常数项均取零。因此，对每个正整数 \(n\)，
+\begin{equation}
+[x^n](J_\alpha-K_{\alpha,N})
+=\frac{(-15)^N}{n}\,[x^{n-1}]
+\frac{(3\alpha +4)w^{\alpha-2N}-3\alpha w^{\alpha-2N-2}}{1-x}.
+\label{eq:three-remainder-coefficient}
+\end{equation}
+由式\eqref{eq:three-half-binomial}，式\eqref{eq:three-remainder-coefficient}中
+\([x^{n-1}]\) 所提取的系数属于 \(\mathbb Z[1/2]\)，故
+\begin{equation}
+v_3\bigl([x^n](J_\alpha-K_{\alpha,N})\bigr)\ge N-v_3(n).
+\label{eq:three-remainder-valuation}
+\end{equation}
+
+先设 \(m\ge1\)，并设奇整数 \(\alpha\) 满足
+\(-4m-1\le \alpha\le m-1\)。对于
+\eqref{eq:three-finite-primitive} 中的任一分母 \(d\)，有
+\begin{equation}
+0<|d|\le4m+3+2\ell<3^{m+\ell+1}.
+\label{eq:three-denominator-bound}
+\end{equation}
+最后的不等式在 \((m,\ell)=(1,0)\) 时为 \(7<9\)。每次将 \(m\) 或
+\(\ell\) 增加 \(1\)，左边分别增加 \(4\) 或 \(2\)，而右边乘以
+\(3\)，故该不等式对所有 \(m\ge1,\ell\ge0\) 成立。
+因此 \(v_3(d)\le m+\ell\)。式
+\eqref{eq:three-finite-primitive} 中的因子 \(3^m15^\ell\) 消去每个
+分母中的全部 \(3\) 因子。再由式\eqref{eq:three-half-binomial}，对每个整数 \(\beta\)，
+\(w^\beta-1\) 的系数属于 \(\mathbb Z[1/2]\)，于是
+\begin{equation}
+v_3\bigl(3^m[x^n]K_{\alpha,N}\bigr)\ge0
+\quad\text{对每个 }n\ge0\text{ 和 }N\ge0.
+\label{eq:three-finite-main-integral}
+\end{equation}
+
+当 \(m=0,\alpha=-1\) 时，第一类分母的绝对值为
+\(2\ell+1<3^{\ell+1}\)，其 \(3\) 阶至多为 \(\ell\)；第二类分母的
+绝对值为 \(2\ell+3<3^{\ell+2}\)，其 \(3\) 阶至多为 \(\ell+1\)。
+第二类分子 \(3\alpha=-3\) 含因子3，因此式\eqref{eq:three-finite-main-integral}仍成立。
+
+固定正整数 \(n\)，取 \(N=v_3(n)\)。由式
+\eqref{eq:three-remainder-valuation}，得
+\[
+v_3\bigl(3^m[x^n](J_\alpha-K_{\alpha,N})\bigr)\ge m\ge0.
+\]
+结合式\eqref{eq:three-finite-main-integral}，得到
+\begin{equation}
+v_3\bigl(3^m[x^n]J_\alpha\bigr)\ge0.
+\label{eq:three-power-integral}
+\end{equation}
+此式对 $m\ge1$ 时指定范围内的奇整数 $\alpha$ 以及 $m=0,\alpha=-1$ 均成立。
+再由 $J_H$ 的线性性和 $\gamma_\alpha\in\Z_{(3)}$，即得结论。
+\end{proof}
+
+\subsection{原序列的重新编号与奇次幂展开}
+
+对非负整数 \(r,s\)，记
+\[
+m=r+s,\qquad R=\max(r,s),\qquad S=\min(r,s),
+\]
+并定义
+\[
+h_k^{(r,s)}=
+\begin{cases}
+\displaystyle
+\binom{k}{r}^{\!2}\binom{k}{s}^{\!2}
+\binom{2k-m}{k-r}4^k,&k\ge R,\\[2mm]
+0,&k<R.
+\end{cases}
+\]
+在 \(a_k\) 的定义中令 \(i=k-r\)、\(j=k-s\)，得
+\begin{equation}
+a_k=\sum_{r,s\ge0}3^{r+s}2^{-(r+s)}h_k^{(r,s)}.
+\label{eq:three-reindex}
+\end{equation}
+对于每个 \(k\)，右边仅有 \(r,s\le k\) 的项可能非零。
+
+定义
+\[
+F_{r,s}(x)=\sum_{k\ge R}\binom{2k-m}{k-r}4^kx^k,
+\qquad
+H_{r,s}(x)=\sum_{k\ge0}h_k^{(r,s)}x^k.
+\]
+有
+\begin{equation}
+F_{r,s}(x)=2^{-m}\frac{(1-w)^R(1+w)^S}{w}.
+\label{eq:three-base-series}
+\end{equation}
+
+先证生成函数恒等式
+\begin{equation}
+\sum_{\ell\ge0}\binom{2\ell+d}{\ell}y^\ell
+=\frac{C(y)^d}{\sqrt{1-4y}},
+\qquad
+C(y)=\frac{1-\sqrt{1-4y}}{2y},\quad d\ge0.
+\label{eq:three-binomial-series}
+\end{equation}
+这里 \(C(0)=1\)，且 \(C-1=yC^2\)。为证明该恒等式，记其左边为
+\(B_d(y)\)。二项式定理给出
+\[
+B_0(y)=\frac{1}{\sqrt{1-4y}},
+\qquad
+B_1(y)=\frac{B_0(y)-1}{2y}
+=\frac{C(y)}{\sqrt{1-4y}}.
+\]
+其中第二式也直接来自
+\(2\binom{2\ell+1}{\ell}=\binom{2\ell+2}{\ell+1}\)。
+帕斯卡恒等式给出
+\[
+B_d=B_{d-1}+yB_{d+1}\qquad(d\ge1).
+\]
+对非负整数 $d$，令 $\widetilde B_d=C(y)^d/\sqrt{1-4y}$。
+由 $C-1=yC^2$，序列 $\widetilde B_d$ 满足上述递推，且
+$\widetilde B_0=B_0$、$\widetilde B_1=B_1$。
+若 $d\ge1$，并已知 $B_{d-1}=\widetilde B_{d-1}$ 和 $B_d=\widetilde B_d$，
+比较两序列的递推式，得
+\[
+y\bigl(B_{d+1}-\widetilde B_{d+1}\bigr)=0.
+\]
+由于 $\Q[[y]]$ 没有零因子，且 $y\ne0$，可约去 $y$，得到
+$B_{d+1}=\widetilde B_{d+1}$。从 $d=1$ 起归纳，即得式\eqref{eq:three-binomial-series}。
+
+由对称性可设 \(r\ge s\)。令 \(k=r+\ell\)、\(d=r-s\)，则
+\[
+F_{r,s}(x)=\frac{(4x)^r C(4x)^{r-s}}{w}.
+\]
+利用 \(4x=(1-w^2)/4\)、\(C(4x)=2/(1+w)\)，即得式\eqref{eq:three-base-series}。
+
+\paragraph{二项式微分算子。}
+
+令 \(\theta=x\,d/dx\)，并定义
+\(\binom{\theta}{j}=\theta(\theta-1)\cdots(\theta-j+1)/j!\)，
+其中 \(j=0\) 时取恒等算子。由 \(\binom{\theta}{j}x^k=\binom{k}{j}x^k\)，
+有
+\begin{equation}
+H_{r,s}=\binom{\theta}{r}^{\!2}\binom{\theta}{s}^{\!2}F_{r,s}.
+\label{eq:three-operators}
+\end{equation}
+此处的平方表示相应微分算子的复合。对任意整数 \(\alpha\) 和非负整数 \(j\)，
+\begin{equation}
+\binom{\theta}{j}w^\alpha
+=\frac{x^j}{j!}\frac{d^j}{dx^j}w^\alpha
+=\binom{\alpha/2}{j}(w^2-1)^j w^{\alpha-2j}.
+\label{eq:three-operator-power}
+\end{equation}
+
+由 \eqref{eq:three-base-series}，\(F_{r,s}\) 是系数属于
+\(\mathbb Z[1/2]\)、指数介于 \(-1\) 与 \(m-1\) 之间的 \(w\)-Laurent
+多项式。公式 \eqref{eq:three-operator-power} 表明，每个算子
+\(\binom{\theta}{j}\) 保持这一系数环、保持指数的奇偶性，并使指数
+至多降低 \(2j\)。式 \eqref{eq:three-operators} 中四个算子的下标之和
+为 \(2m\)，故 \(H_{r,s}\) 的指数介于 \(-4m-1\) 与 \(m-1\) 之间。
+
+如果 \(m>0\)，\(F_{r,s}\) 的偶数次幂部分是 \(w^2\) 的多项式，因此
+也是 \(x\) 的多项式，次数至多为
+\(\lfloor(m-1)/2\rfloor<R\)。而式 \eqref{eq:three-operators} 的算子
+消去每个次数小于 \(R\) 的单项式 \(x^k\)，因为此时
+\(\binom{k}{r}\binom{k}{s}=0\)。故偶数次幂部分为零。
+当 \(m=0\) 时，\(H_{0,0}=w^{-1}\)。因此
+\begin{equation}
+H_{r,s}(x)=
+\sum_{\substack{\alpha\in2\Z+1\\-4m-1\le\alpha\le m-1}}
+\gamma_\alpha w^\alpha,
+\qquad \gamma_\alpha\in\mathbb Z[1/2].
+\label{eq:three-odd-expansion}
+\end{equation}
+由定义，\(H_{r,s}\) 中次数小于 \(R\) 的系数均为零。
+
+\subsection{加权和的三进整性}
+
+对有限展开 \eqref{eq:three-odd-expansion} 应用引理~\ref{lem:odd-integrality}，利用 \(J_H\) 对 \(H\) 的线性，得到
+\[
+v_3\left(3^{r+s}2^{-(r+s)}[x^n]J_{H_{r,s}}\right)\ge0
+\qquad(r,s\ge0,\ n\ge1).
+\]
+因为 \(H_{r,s}\) 从次数 \(R\) 起，按
+\eqref{eq:three-primitive-definition}，\(J_{H_{r,s}}\) 从次数
+\(R+1\) 起。因此，对于固定的 \(n\)，只有有限多个
+\(0\le r,s<n\) 的项可能贡献 \(x^n\) 的系数。
+由式\eqref{eq:three-reindex}，得
+\[
+T_n=
+\sum_{0\le r,s<n}3^{r+s}2^{-(r+s)}[x^n]J_{H_{r,s}}.
+\]
+每个加数的 \(3\) 阶均非负，所以
+\begin{equation}\label{eq:T3}
+v_3(T_n)\ge0\qquad(n\ge1).
+\end{equation}
+
+\section{主定理的证明}
+\begin{proof}[定理~\ref{thm:main}~的证明]
+由式\eqref{eq:T24}，$T_n$ 的最简分母只能含素因子2和3。
+式\eqref{eq:T2}和\eqref{eq:T3}分别给出 $T_n\in\Z_{(2)}$ 和 $T_n\in\Z_{(3)}$。
+因此 $T_n$ 的最简分母为1，即 $T_n\in\Z$，这与式\eqref{eq:goal}等价。
+当 $n=1$ 时，$a_0=1$、$T_1=4$，亦符合结论。
+\end{proof}
+
+\appendix
+\section{多项式证书}\label{sec:certificate}
+定义以下五个二元整数多项式：
+\begin{equation}\label{eq:polyA}
+\begin{split}
+A(u,v)={}&(2u+1)(3u+1)\bigl[
+6(2u+1)(3u+1)v^3\\
+&\quad +(42u^2+23u+1)v^2+5u(4u+1)v+4u^2\bigr].
+\end{split}
+\end{equation}
+\begin{equation}\label{eq:polyB}
+\begin{split}
+B(u,v)={}&18(u+1)(2u+1)(3u+1)(6u+1)v^3\\
+&+(792u^4+1464u^3+856u^2+184u+11)v^2\\
+&+u(318u^3+484u^2+209u+22)v\\
+&+u^2(2u+1)(21u+11).
+\end{split}
+\end{equation}
+\begin{equation}\label{eq:polyC}
+\begin{split}
+C(u,v)={}&(2u+1)\bigl[3(36u^2+29u+7)v^3\\
+&\quad +(132u^2+77u+10)v^2+u(53u+17)v+7u^2\bigr].
+\end{split}
+\end{equation}
+\begin{align}
+D(u,v)&=uv\bigl[4(12u^2+9u+1)v+u(51u+28)\bigr],\label{eq:polyD}\\
+E(u,v)&=3uv(u-v)(56uv+25u+25v+8).\label{eq:polyE}
+\end{align}
+令
+\begin{equation}\label{eq:polysP}
+\begin{aligned}
+P_u&=-A(u,v)-B(u,v)z-C(u,v)z^2,\\
+P_v&=-C(v,u)-B(v,u)z-A(v,u)z^2,\\
+P_z&=-D(u,v)-E(u,v)z+D(v,u)z^2.
+\end{aligned}
+\end{equation}
+为核验 \eqref{eq:certificate}，记其左端为
+\[
+\mathcal E=\Phi \Lambda\sum_iD_iP_i-\sum_iP_iD_i(\Phi \Lambda).
+\]
+该式的 $z$ 次数至多为 $4$。将上述多项式代入并按 $z$ 展开，得到
+\begin{equation}\label{eq:certificate-table}
+\begin{array}{c|l}
+j&[z^j]\mathcal E/(48uv\Lambda^2)\\ \hline
+0&0\\
+1&(2u+1)(3u+1)(2v+1)\\
+2&\begin{aligned}36u^2v^2+30u^2v+6u^2+30uv^2+31uv\\{}+7u+6v^2+7v+2\end{aligned}\\
+3&(2u+1)(2v+1)(3v+1)\\
+4&0
+\end{array}
+\end{equation}
+另一方面，$\Phi$ 的常数项和二次项分别是表中的 $j=1,3$ 两项，而
+\begin{equation}
+\begin{split}
+[z]\Phi+3uv
+&=(2u+1)(2v+1)(2+3u+3v+9uv)+2uv\\
+&=36u^2v^2+30u^2v+6u^2+30uv^2\\
+&\quad+31uv+7u+6v^2+7v+2.
+\end{split}
+\end{equation}
+因此 \eqref{eq:certificate-table} 正是
+$48uvz(\Phi+3uvz)\Lambda^2$ 的全部 $z$ 系数，恒等式 \eqref{eq:certificate} 得证。
+
+\section{对角系数的有限多项式表示}\label{app:finite-diagonal}
+% A self-contained finite-polynomial appendix; Phi, \Lambda and P_i are the certificate polynomials.
+记
+\[
+ K=\sum_{i\in\{u,v,z\}}P_i(\Phi-D_i\Phi),\qquad
+ c_r=[u^rv^rz^r]\Phi^r,\qquad
+ b_m=\frac2m(c_{m-1}+3c_{m-2}).
+\]
+式\eqref{eq:bcertificate}也可写成有限多项式的系数。仍约定 $c_{-1}=0$。
+对 $q\ge0$ 定义
+\[
+ U_q(u)=\sum_{t=0}^q\binom{q+1}{t+1}
+        (3^{t+1}-2^{t+1})u^t
+       =\sum_{r=0}^q(1+2u)^r(1+3u)^{q-r},
+\]
+并对 $m\ge0$ 定义整数系数多项式
+\[
+ Q_m(u,v)=\sum_{q=0}^m(-1)^q u^{m-q}v^qU_q(u).
+\]
+则对于每个 $m\ge2$，有恒等式
+\[
+ \boxed{24b_m=[u^{2m+2}v^mz^m]Q_mK\Phi^{m-2}.}
+\]
+等价地，
+\[
+\boxed{
+24b_m=\sum_{q=0}^m\sum_{t=0}^q(-1)^q\binom{q+1}{t+1}
+ (3^{t+1}-2^{t+1})
+ [u^{m+q+2-t}v^{m-q}z^m]K\Phi^{m-2}.
+}
+\]
+右端各项均为整数。
+
+\paragraph{证明。}
+令 $A_0=1+2u$, $B_0=1+3u$。由 $U_q$ 的有限和表达式可得
+$U_0=1$, $U_1=A_0+B_0$ 及
+$U_q=(A_0+B_0)U_{q-1}-A_0B_0U_{q-2}$。
+因为 $\Lambda=(u+A_0v)(u+B_0v)$，逐项相乘得
+\[
+ \Lambda Q_m=u^{m+2}+(-1)^mv^{m+1}
+       \bigl(uU_{m+1}+A_0B_0vU_m\bigr).
+\]
+以下 $F\equiv G\pmod{v^{m+1}}$ 只表示两有限多项式的
+$v^0,\ldots,v^m$ 系数相等。
+固定 $m\ge2$，令 $a=m+2$；于是 $\Lambda Q_m\equiv u^a$，且
+\[
+ \Lambda D_iQ_m+Q_mD_i\Lambda\equiv a\,\delta_{i,u}\,u^a.
+\]
+其中 $i\in\{u,v,z\}$，$\delta_{i,u}$ 为 Kronecker 符号：
+$i=u$ 时取1，$i=v$ 或 $i=z$ 时取0。
+这是因为 $D_u(u^a)=au^a$，而 $D_v(u^a)=D_z(u^a)=0$。
+Euler 微分 $D_u,D_v,D_z$ 都保持上述系数相等关系。
+定义有限多项式
+\[
+\begin{split}
+\mathcal E_m={}&\sum_iD_i\bigl(P_iQ_m\Phi^{m-1}\bigr)
+  -aP_uQ_m\Phi^{m-1}\\
+ &-mQ_m\Phi^{m-2}\sum_iP_iD_i\Phi.
+\end{split}
+\]
+应用乘积法则、$\Lambda Q_m\equiv u^a$ 及其三个微分式，可得
+\[
+\begin{split}
+\Lambda^2\mathcal E_m
+&\equiv u^a\Phi^{m-2}
+ \left(\Phi \Lambda\sum_iD_iP_i-\sum_iP_iD_i(\Phi \Lambda)\right)\\
+&=48u^auvz(\Phi+3uvz)\Phi^{m-2}\Lambda^2.
+\end{split}
+\]
+由于 $\Lambda(u,0)^2=u^4\ne0$，可以在上述系数相等关系中约去 $\Lambda^2$：
+若一个非零多项式最低的 $v$ 次数不超过 $m$，乘以 $\Lambda^2$ 后最低的
+$v$ 次数不变，因为该最低项的系数只是乘以非零多项式 $u^4$。
+因此
+\[
+\mathcal E_m\equiv48u^auvz(\Phi+3uvz)\Phi^{m-2}.
+\]
+对两端取 $[u^{2m+2}v^mz^m]$。
+Euler 微分作用于该系数时，$D_u,D_v,D_z$ 分别给出乘数
+$2m+2,m,m$；又有 $2m+2-a=m$。故左端系数为
+\[
+m[u^{2m+2}v^mz^m]Q_m\Phi^{m-2}
+ \sum_iP_i(\Phi-D_i\Phi).
+\]
+右端系数为
+$48(c_{m-1}+3c_{m-2})=24m b_m$。
+约去 $m$ 即得上述公式。
+$m=1$ 时，$b_1=2$。
+
+\section{计算核实}\label{app:reproducibility}
+式\eqref{eq:certificate}及其系数表\eqref{eq:certificate-table}已用 Python 程序核实。
+计算采用任意精度整数运算，逐项比较两端的全部系数，所得残差均为零。
+
+\begin{thebibliography}{9}
+\bibitem{Guo2016}
+Guo, V.J.W., Proof of Sun's conjectures on integer-valued polynomials,
+J. Math. Anal. Appl., 2016, 444(1): 182--191.
+\href{https://doi.org/10.1016/j.jmaa.2016.06.028}{doi:10.1016/j.jmaa.2016.06.028}.
+\bibitem{Sun2012}
+Sun, Z.-W., On sums of Ap\'ery polynomials and related congruences,
+J. Number Theory, 2012, 132(11): 2673--2699.
+\href{https://arxiv.org/abs/1101.1946}{arXiv:1101.1946}.
+\bibitem{Sun2026}
+Sun, Z.-W., A family of polynomials and related congruences and series,
+Front. Comb. Number Theory, 2026, 2: 1--22.
+\href{https://doi.org/10.3934/fcnt.2026009}{doi:10.3934/fcnt.2026009}.
+\bibitem{Zeilberger1991}
+Zeilberger, D., The method of creative telescoping,
+J. Symbolic Comput., 1991, 11(3): 195--204.
+\href{https://doi.org/10.1016/S0747-7171(08)80044-2}{doi:10.1016/S0747-7171(08)80044-2}.
+\end{thebibliography}
+\end{document}
