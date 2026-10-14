@@ -33,7 +33,7 @@ $$
 定义计数序列
 
 $$
-b_{n,k}=\#\{w\in\{0,1\}^n:w_n=1,\ \operatorname{occ}_{10}(w)+\operatorname{occ}_{011}(w)=k\},
+b_{n,k}=\#\{w\in\{0,1\}^n:w_n=1,\ \mathrm{occ}_{10}(w)+\mathrm{occ}_{011}(w)=k\},
 $$
 
 其中每个起始位置分别计数，允许模式出现相互重叠。论文证明：对每个 $n\ge1$ 和整数 $k$，都有
