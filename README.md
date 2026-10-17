@@ -55,3 +55,39 @@ $$
 
 - [阅读论文 PDF](对数凹猜想/binary_pattern_log_concavity.pdf)
 - [查看 LaTeX 源码](对数凹猜想/binary_pattern_log_concavity.tex)
+
+## Motzkin 交错和根序列的严格对数凹性
+
+论文研究 Feng-Zhen Zhao 在 [INTEGERS 26 (2026), #A55, Conjecture 1](https://math.colgate.edu/~integers/aa55/aa55.pdf) 中提出的 Motzkin 交错和根序列对数凹性猜想。Motzkin 数由
+
+$$
+M_0=M_1=1,\qquad
+(n+2)M_n=(2n+1)M_{n-1}+3(n-1)M_{n-2}\quad(n\ge2)
+$$
+
+定义，并令
+
+$$
+T_n=\sum_{k=0}^{n}(-1)^{n-k}M_k.
+$$
+
+论文证明：所有整数 $n\ge9$ 均满足 $T_n>0$，且所有整数 $n\ge10$ 均满足
+
+$$
+\left(T_n^{1/n}\right)^2
+>T_{n-1}^{1/(n-1)}T_{n+1}^{1/(n+1)}.
+$$
+
+因此，序列 $(T_n^{1/n})_{n\ge9}$ 严格对数凹，得到比原猜想更强的严格不等式。
+
+论文的证明分为四步：
+
+1. 从定义递推验证 Motzkin 数的矩积分表示，将交错和写成正积分主项 $P(n)$ 与绝对值小于 $1$ 的修正项之和，其中 $P(t)=\frac{1}{2\pi}\int_0^3x^{t+1}\sqrt{\frac{3-x}{x+1}}\,dx$。
+2. 将积分中的概率密度与形状参数为 $3/2$ 的 Gamma 密度作单调比较，控制前两阶矩，证明 $f(t)=\log P(t)/t$ 满足 $f''(t)<-3/(2t^3)$，对全部实数 $t\ge9$ 成立。
+3. 利用 Beta 积分和 Jensen 不等式建立统一下界 $P(m)>3^m/(m+3)^{3/2}$，并以显式指数增长界证明交错修正的二阶差分误差小于主项的凹性余量。
+4. 通过二阶差分的三角核积分恒等式回到离散序列，得到全部整数 $n\ge10$ 的严格不等式，包括边界指标 $n=10$。
+
+正文从题给初值与递推出发，所有关键阈值和常数均由显式不等式验证，全部指标统一覆盖，不依赖有限范围计算。
+
+- [阅读论文 PDF](Motzkin猜想/motzkin_root_log_concavity.pdf)
+- [查看 LaTeX 源码](Motzkin猜想/motzkin_root_log_concavity.tex)
