@@ -1,0 +1,433 @@
+\documentclass[UTF8,fontset=fandol,11pt]{ctexart}
+
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\hypersetup{
+  unicode=true,
+  colorlinks=true,
+  linkcolor=blue,
+  pdftitle={Motzkin交错和的根序列严格对数凹性},
+  pdfauthor={}
+}
+
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}{引理}
+\newcommand{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+
+\title{Motzkin 交错和的根序列严格对数凹性}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+本文从定义递推构造 Motzkin 数的积分表示，将其交错和分解为一个正积分主项与绝对值小于 $1$ 的误差。通过与 Gamma 分布比较，证明主项根对数的连续插值具有明确的二阶导数负上界，再证明该凹性余量严格超过交错误差的二阶差分。由此证明从第 $9$ 项起的根序列严格对数凹。全部阈值和常数均用显式不等式验证。
+\end{abstract}
+
+\begin{theorem}\label{thm:main}
+设数列 $(M_n)_{n\ge0}$ 由
+\[
+M_0=M_1=1,
+\qquad
+(n+2)M_n=(2n+1)M_{n-1}+3(n-1)M_{n-2}
+\quad(n\ge2)
+\]
+定义，并令
+\[
+T_n=\sum_{k=0}^{n}(-1)^{n-k}M_k.
+\]
+则 $T_n>0$ 对所有整数 $n\ge9$ 成立，且
+\begin{equation}\label{eq:conclusion}
+\left(T_n^{1/n}\right)^2
+>T_{n-1}^{1/(n-1)}T_{n+1}^{1/(n+1)}
+\qquad(n\ge10).
+\end{equation}
+因此 $(T_n^{1/n})_{n\ge9}$ 是严格对数凹序列。
+\end{theorem}
+
+全文中的 $\log$ 均表示自然对数。我们使用标准的 Beta 函数与 Gamma 函数
+\[
+B(u,v)=\int_0^1 y^{u-1}(1-y)^{v-1}\,dy,
+\qquad
+\Gamma(u)=\int_0^\infty s^{u-1}e^{-s}\,ds
+\quad(u,v>0),
+\]
+以及恒等式
+\[
+B(u,v)=\frac{\Gamma(u)\Gamma(v)}{\Gamma(u+v)},
+\qquad
+\Gamma\left(\frac12\right)=\sqrt\pi,
+\qquad
+\Gamma\left(\frac32\right)=\frac{\sqrt\pi}{2}.
+\]
+
+\section{积分表示及有界误差}
+
+定义
+\[
+q(x)=(3-x)(x+1)=3+2x-x^2,
+\qquad
+I_n=\frac1{2\pi}\int_{-1}^{3}x^n\sqrt{q(x)}\,dx
+\quad(n\ge0).
+\]
+半径为 $2$ 的半圆面积给出 $I_0=1$。由于 $\sqrt{q(x)}$ 关于 $x=1$ 对称，有 $I_1=I_0=1$。对 $n\ge2$，函数 $x^{n-1}q(x)^{3/2}$ 在两个积分端点均为零。因此
+\begin{align*}
+0
+&=\frac1{2\pi}\int_{-1}^{3}
+  \frac{d}{dx}\bigl(x^{n-1}q(x)^{3/2}\bigr)\,dx\\
+&=(n-1)\bigl(3I_{n-2}+2I_{n-1}-I_n\bigr)
+  +3(I_{n-1}-I_n)\\
+&=3(n-1)I_{n-2}+(2n+1)I_{n-1}-(n+2)I_n.
+\end{align*}
+故 $I_n$ 与 $M_n$ 满足相同初值和递推，从而
+\begin{equation}\label{eq:moment}
+M_n=\frac1{2\pi}\int_{-1}^{3}x^n\sqrt{(3-x)(x+1)}\,dx.
+\end{equation}
+
+有限几何级数给出
+\[
+\sum_{k=0}^{n}(-1)^{n-k}x^k
+=\frac{x^{n+1}+(-1)^n}{x+1}
+\quad(x\ne-1).
+\]
+另一方面，作代换 $x+1=4u$ 可得
+\[
+\frac1{2\pi}\int_{-1}^{3}
+\sqrt{\frac{3-x}{x+1}}\,dx
+=\frac2\pi B\left(\frac12,\frac32\right)=1.
+\]
+将此式及有限几何级数代入 \eqref{eq:moment}，得到
+\begin{equation}\label{eq:T-integral}
+T_n=(-1)^n+\frac1{2\pi}\int_{-1}^{3}
+x^{n+1}\sqrt{\frac{3-x}{x+1}}\,dx.
+\end{equation}
+这里端点 $x=-1$ 附近的奇性为 $O((x+1)^{-1/2})$，可积，因而拆分积分合法。
+
+对实数 $t>-2$，定义正函数
+\begin{equation}\label{eq:P}
+P(t)=\frac1{2\pi}\int_0^3
+x^{t+1}\sqrt{\frac{3-x}{x+1}}\,dx.
+\end{equation}
+对整数 $n\ge0$，再定义
+\[
+A_n=\frac1{2\pi}\int_0^1
+u^{n+1}\sqrt{\frac{3+u}{1-u}}\,du.
+\]
+在 \eqref{eq:T-integral} 的负半轴部分作代换 $x=-u$，便有
+\begin{equation}\label{eq:decomposition}
+T_n=P(n)+(-1)^n(1-A_n).
+\end{equation}
+利用 $\sqrt{3+u}\le2$ 及 $u^{n+1}\le u$，得到
+\[
+0<A_n
+\le\frac1\pi B\left(n+2,\frac12\right)
+\le\frac1\pi B\left(2,\frac12\right)
+=\frac4{3\pi}<1.
+\]
+最后一步使用 $\pi>3$。因此
+\begin{equation}\label{eq:error-one}
+|T_n-P(n)|<1
+\qquad(n\ge0).
+\end{equation}
+
+\section{与 Gamma 分布比较}
+
+先记录一个简单的概率比较。这里 $\E$、$\Var$ 和 $\Cov$ 分别表示数学期望、方差和协方差；下标标明所用的概率密度。
+
+\begin{lemma}\label{lem:comparison}
+设 $g$ 是概率密度，$r$ 是正的递减函数，并且 $0<\E_g r<\infty$。将 $g(s)r(s)$ 归一化，得到概率密度
+\[
+p(s)=\frac{g(s)r(s)}{\E_g r}.
+\]
+若 $\varphi$ 为递增函数，且下述期望均有限，则
+\[
+\E_p\varphi\le\E_g\varphi.
+\]
+\end{lemma}
+
+\begin{proof}
+取相互独立且密度均为 $g$ 的随机变量 $X,Y$。由于 $\varphi$ 递增、$r$ 递减，
+\[
+2\Cov_g(\varphi,r)
+=\E\bigl[(\varphi(X)-\varphi(Y))(r(X)-r(Y))\bigr]\le0.
+\]
+因此 $\E_g(\varphi r)\le\E_g\varphi\,\E_g r$，除以 $\E_g r$ 即得结论。
+\end{proof}
+
+本节及下一节均设实数 $t\ge9$。令
+\begin{equation}\label{eq:ZaC}
+Z(t)=\frac{P(t)}{3^t},
+\qquad
+a=t+\frac{13}{8},
+\qquad
+C=\frac{3^{5/2}}{8\sqrt\pi}.
+\end{equation}
+此时总有 $a>0$。在 \eqref{eq:P} 中先作 $x=3y$，再作 $y=e^{-s}$，得到
+\begin{align}
+Z(t)
+&=\frac{3^{5/2}}{2\pi}\int_0^1
+y^{t+1}\frac{\sqrt{1-y}}{\sqrt{1+3y}}\,dy\notag\\
+&=\frac{3^{5/2}}{2\pi}\int_0^\infty
+e^{-(t+2)s}\frac{\sqrt{1-e^{-s}}}{\sqrt{1+3e^{-s}}}\,ds\notag\\
+&=\frac{3^{5/2}}{4\pi}\int_0^\infty
+e^{-as}s^{1/2}r(s)\,ds, \label{eq:Z-Gamma}
+\end{align}
+其中
+\begin{equation}\label{eq:r}
+r(s)=\sqrt{\frac{1-e^{-s}}s}\,
+\frac{2e^{-3s/8}}{\sqrt{1+3e^{-s}}}
+\qquad(s>0).
+\end{equation}
+显然 $r(s)>0$，且 $r(0+)=1$。直接求导可得
+\begin{equation}\label{eq:r-derivative}
+\frac{r'(s)}{r(s)}
+=\frac12\left(\frac1{e^s-1}-\frac1s\right)
+-\frac38+\frac{3e^{-s}}{2(1+3e^{-s})}<0.
+\end{equation}
+事实上，$e^s>1+s$ 使括号内严格为负；令 $z=e^{-s}\le1$，则
+\[
+\frac{3z}{2(1+3z)}\le\frac38
+\quad\Longleftrightarrow\quad z\le1,
+\]
+所以最后两项之和不大于零。由此得到 $r$ 递减且 $0<r(s)\le1$。
+
+令 $g_a$ 为形状参数 $3/2$、速率参数 $a$ 的 Gamma 概率密度，即
+\begin{equation}\label{eq:gamma-density}
+g_a(s)=\frac{a^{3/2}}{\Gamma(3/2)}s^{1/2}e^{-as}
+\quad(s>0),
+\qquad
+\int_0^\infty g_a(s)\,ds=1.
+\end{equation}
+再令 $S$ 具有概率密度
+\begin{equation}\label{eq:S-density}
+p_t(s)=\frac{g_a(s)r(s)}{\displaystyle\int_0^\infty g_a(v)r(v)\,dv}
+=\frac{e^{-as}s^{1/2}r(s)}{\displaystyle\int_0^\infty e^{-av}v^{1/2}r(v)\,dv}.
+\end{equation}
+利用 $r\le1$，由 \eqref{eq:Z-Gamma} 得到
+\begin{equation}\label{eq:Z-upper}
+Z(t)\le\frac{3^{5/2}}{4\pi}\frac{\Gamma(3/2)}{a^{3/2}}
+=C a^{-3/2}.
+\end{equation}
+将引理 \ref{lem:comparison} 分别用于递增函数 $s$ 与 $s^2$，并使用 Gamma 分布的矩，得到
+\begin{equation}\label{eq:S-moments}
+\E S\le\frac3{2a},
+\qquad
+\E S^2\le\frac{15}{4a^2}.
+\end{equation}
+这两个 Gamma 矩也可直接将 \eqref{eq:gamma-density} 分别乘以 $s$ 和 $s^2$ 后积分求出。
+
+\section{连续主项的凹性余量}
+
+对于任意 $t_0\ge9$，可在 $t_0$ 的一个紧邻域内取正常数 $c$，使 $a=t+13/8\ge c$。由于 $0<r\le1$，\eqref{eq:Z-Gamma} 的被积函数及关于 $t$ 的前两阶导数，在无穷远处分别由常数乘以
+\[
+s^{1/2}e^{-cs},\quad s^{3/2}e^{-cs},\quad s^{5/2}e^{-cs}
+\]
+控制；在零点附近这些函数也可积。因此可在积分号下求两次导数，并由 \eqref{eq:S-density} 得
+\begin{equation}\label{eq:logZ-derivatives}
+(\log Z)'(t)=-\E S,
+\qquad
+(\log Z)''(t)=\Var S.
+\end{equation}
+
+定义
+\[
+f(t)=\frac{\log P(t)}t
+=\log3+\frac{\log Z(t)}t
+\qquad(t\ge9).
+\]
+由 \eqref{eq:logZ-derivatives}、\eqref{eq:Z-upper}、\eqref{eq:S-moments} 及 $\Var S\le\E S^2$，有
+\begin{align}
+t^3f''(t)
+&=t^2\Var S+2t\E S+2\log Z(t)\notag\\
+&\le R(t), \label{eq:fpp-R}
+\end{align}
+其中
+\begin{equation}\label{eq:R}
+R(t)=\frac{15}{4}\left(\frac ta\right)^2
++3\frac ta+2\log C-3\log a.
+\end{equation}
+
+下面用显式常数证明 $R(t)<-3/2$。记 $c_0=13/8$，则 $a=t+c_0$。对 $t\ge9$，有 $0<t/a<1$，从而
+\begin{align}
+R'(t)
+&=\left(\frac{15}{2}\frac ta+3\right)\frac{c_0}{a^2}-\frac3a\notag\\
+&\le\frac{(21/2)c_0-3a}{a^2}<0. \label{eq:R-decreasing}
+\end{align}
+最后一步是因为 $a\ge85/8$，而
+\[
+\frac{21}{2}c_0=\frac{273}{16}
+<\frac{255}{8}=3\cdot\frac{85}{8}.
+\]
+
+我们只需验证 $t=9$。所用初等常数估计为
+\begin{equation}\label{eq:elementary-constants}
+3<\pi<\frac72,
+\qquad
+e<\frac{11}{4}.
+\end{equation}
+其中 $\pi>3$ 来自单位圆内接正六边形的周长严格小于圆周长；上界可由
+\[
+\pi=4\int_0^1\frac{dx}{1+x^2}
+<4\int_0^1(1-x^2+x^4)\,dx
+=\frac{52}{15}<\frac72
+\]
+得到。这里 $(1+x^2)^{-1}<1-x^2+x^4$ 对 $x>0$ 成立。对于 $e$，由 $(4+j)!\ge4!\,5^j$ 有
+\[
+e=\sum_{k=0}^\infty\frac1{k!}
+\le\frac83+\frac1{24}\sum_{j=0}^\infty5^{-j}
+=\frac{87}{32}<\frac{11}{4}.
+\]
+由 $\pi>3$ 及 $\log(1+x)<x$（$x>0$），得到
+\begin{equation}\label{eq:C-log}
+C<\frac98,
+\qquad 2\log C<\frac14.
+\end{equation}
+又因为
+\[
+11^7=19\,487\,171
+<19\,652\,000=32\cdot85^3,
+\]
+所以
+\[
+e^7<\left(\frac{11}{4}\right)^7
+<\left(\frac{85}{8}\right)^3,
+\qquad
+\log\left(\frac{85}{8}\right)>\frac73.
+\]
+在 $t=9$ 时，$a=85/8$，$t/a=72/85$，从而
+\begin{align*}
+R(9)
+&<\frac{15}{4}\left(\frac{72}{85}\right)^2
++\frac{216}{85}+\frac14-7\\
+&=\frac{1512}{289}-\frac{27}{4}
+=-\frac{1755}{1156}<-\frac32.
+\end{align*}
+结合 \eqref{eq:R-decreasing} 和 \eqref{eq:fpp-R}，得到关键估计
+\begin{equation}\label{eq:fpp-negative}
+\boxed{\displaystyle
+f''(t)<-\frac3{2t^3}\qquad(t\ge9).}
+\end{equation}
+
+\section{主项的统一下界}
+
+当 $0\le y\le1$ 时，$(1+3y)^{-1/2}\ge1/2$。因此，对整数 $m\ge9$，由 \eqref{eq:P} 中的代换 $x=3y$ 得
+\begin{align}
+P(m)
+&\ge\frac{3^{m+5/2}}{4\pi}B\left(m+2,\frac32\right)\notag\\
+&=C3^m\frac{\Gamma(m+2)}{\Gamma(m+7/2)}. \label{eq:P-beta-lower}
+\end{align}
+
+为控制 Gamma 函数之比，令 $b>0$，并令随机变量 $X$ 具有形状参数 $b$、速率参数 $1$ 的 Gamma 密度
+\[
+\frac{x^{b-1}e^{-x}}{\Gamma(b)}\qquad(x>0).
+\]
+于是 $\E X^2=b(b+1)$。将 Jensen 不等式用于凹函数 $v^{3/4}$，得到
+\[
+\frac{\Gamma(b+3/2)}{\Gamma(b)}
+=\E X^{3/2}
+\le(\E X^2)^{3/4}
+=[b(b+1)]^{3/4}<(b+1)^{3/2}.
+\]
+取 $b=m+2$。由 \eqref{eq:elementary-constants}，
+\[
+C^2=\frac{243}{64\pi}>\frac{243}{224}>1,
+\]
+所以 $C>1$，进而 \eqref{eq:P-beta-lower} 给出
+\begin{equation}\label{eq:P-lower}
+\boxed{\displaystyle
+P(m)>L_m:=\frac{3^m}{(m+3)^{3/2}}\qquad(m\ge9).}
+\end{equation}
+
+\section{离散误差控制与结论}
+
+对于整数 $n\ge10$，定义
+\[
+U_n=\frac{3^{n-1}}{(n+2)^{3/2}}=L_{n-1},
+\qquad
+V_n=1+\frac83\frac{(n+1)^3}{n-1}.
+\]
+我们先证明
+\begin{equation}\label{eq:U-V}
+U_n>V_n\qquad(n\ge10).
+\end{equation}
+基础步用 $\sqrt{12}<4$ 得到
+\[
+U_{10}>\frac{3^9}{48}=\frac{6561}{16}
+>\frac{10675}{27}=V_{10}.
+\]
+中间的有理不等式等价于 $177147>170800$。对 $n\ge10$，由于 $0<(n+2)/(n+3)<1$，
+\begin{equation}\label{eq:U-growth}
+\frac{U_{n+1}}{U_n}
+=3\left(\frac{n+2}{n+3}\right)^{3/2}
+>3\left(\frac{n+2}{n+3}\right)^2
+\ge3\left(\frac{12}{13}\right)^2
+=\frac{432}{169}>2.
+\end{equation}
+另一方面，记 $D_n=V_n-1$，则
+\[
+\frac{D_{n+1}}{D_n}
+=\left(\frac{n+2}{n+1}\right)^3\frac{n-1}{n}
+<\left(\frac{12}{11}\right)^3<2,
+\]
+其中最后一步为 $1728<2662$。所以
+\[
+V_{n+1}=1+D_{n+1}<1+2D_n<2V_n.
+\]
+结合 \eqref{eq:U-growth}，归纳得 \eqref{eq:U-V}。同一比值估计还说明 $L_m$ 在整数 $m\ge9$ 上递增。
+
+由 \eqref{eq:P-lower} 和 \eqref{eq:U-V}，有 $P(j)>1$ 对所有 $j\ge9$ 成立。再由 \eqref{eq:error-one}，得到 $T_j>0$。故以下对数均有定义。令
+\[
+\delta_j=\frac{\log T_j}{j}-f(j)
+\qquad(j\ge9).
+\]
+对 $|u|<1$，由 $\log(1+u)=\int_0^u(1+v)^{-1}\,dv$ 得
+\[
+|\log(1+u)|\le\frac{|u|}{1-|u|}.
+\]
+取 $u=(T_j-P(j))/P(j)$，并使用 \eqref{eq:error-one}，得
+\begin{equation}\label{eq:delta}
+|\delta_j|<\frac1{j(P(j)-1)}.
+\end{equation}
+固定 $n\ge10$。当 $j\in\{n-1,n,n+1\}$ 时，由 \eqref{eq:P-lower} 及 $L_j\ge L_{n-1}=U_n$，得到
+\[
+|\delta_j|<\frac1{(n-1)(U_n-1)}.
+\]
+所以由 \eqref{eq:U-V}，
+\begin{align}
+|2\delta_n-\delta_{n-1}-\delta_{n+1}|
+&<\frac4{(n-1)(U_n-1)}\notag\\
+&<\frac3{2(n+1)^3}. \label{eq:error-second}
+\end{align}
+
+另一方面，两次微积分基本定理给出二阶差分的积分恒等式
+\[
+f(n-1)-2f(n)+f(n+1)
+=\int_{-1}^{1}(1-|s|)f''(n+s)\,ds.
+\]
+由于 $n+s\ge9$，可用 \eqref{eq:fpp-negative}，于是
+\begin{align}
+2f(n)-f(n-1)-f(n+1)
+&>\frac32\int_{-1}^{1}\frac{1-|s|}{(n+s)^3}\,ds\notag\\
+&\ge\frac3{2(n+1)^3}. \label{eq:main-second}
+\end{align}
+最后一步使用 $n+s\le n+1$ 以及
+$\int_{-1}^{1}(1-|s|)\,ds=1$。
+
+现在将 \eqref{eq:error-second} 与 \eqref{eq:main-second} 合并，得到
+\begin{align*}
+\frac{2\log T_n}{n}
+-\frac{\log T_{n-1}}{n-1}
+-\frac{\log T_{n+1}}{n+1}
+&=2f(n)-f(n-1)-f(n+1)\\
+&\quad+2\delta_n-\delta_{n-1}-\delta_{n+1}\\
+&>0
+\qquad(n\ge10).
+\end{align*}
+指数化即得 \eqref{eq:conclusion}，定理 \ref{thm:main} 得证。
+\hfill$\square$
+
+\end{document}
